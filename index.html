@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="paper">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,7 +12,7 @@
 <style>
 :root{
   --paper:#f3ead4; --paper-2:#ece0c4; --paper-3:#e6d8b4;
-  --ink:#1b1610; --ink-2:#2b2418; --ink-soft:#4a3f2e;
+  --ink:#1b1610; --ink-2:#2b2418; --ink-soft:#4a3f2e; --ink-3:#6b5d44; --muted:#8a7a5c;
   --vermillion:#b8302a; --vermillion-deep:#8a1d18;
   --jade:#4f7a55; --gold:#b8924a; --bronze:#6f5d36;
   --card-bg:rgba(255,248,228,.6); --card-bg-2:rgba(255,248,228,.5);
@@ -23,7 +23,9 @@
 }
 html[data-theme="night"]{
   --paper:#141009; --paper-2:#1a1510; --paper-3:#211a12;
-  --ink:#e9ddc2; --ink-2:#d8caa8; --ink-soft:#a08c68;
+  --ink:#e9ddc2; --ink-2:#d8caa8; --ink-soft:#a08c68; --ink-3:#c0ad84; --muted:#9a8763;
+  --vermillion:#d94842; --vermillion-deep:#b8302a;
+  --jade:#6ba072; --gold:#d4a85e; --bronze:#a08858;
   --card-bg:rgba(38,30,20,.62); --card-bg-2:rgba(38,30,20,.5);
   --field-bg:rgba(28,22,15,.7);
   --shadow:0 18px 50px -20px rgba(0,0,0,.7);
@@ -56,6 +58,9 @@ html[data-theme="night"] body::before{opacity:.25;mix-blend-mode:overlay}
   font-family:"ZCOOL XiaoWei",serif;font-size:17px;letter-spacing:.18em;
   padding:14px 34px;border:none;cursor:pointer;border-radius:3px;transition:all .22s ease;
 }
+.btn:focus-visible,.tab:focus-visible,.nav-item:focus-visible,.theme-btn:focus-visible,
+.contact-btn:focus-visible,.quiz-opt:focus-visible,.modal-close:focus-visible,
+.task-row:focus-visible{outline:2px solid var(--vermillion);outline-offset:2px}
 .btn-primary{background:var(--vermillion);color:#f6e6c8;box-shadow:0 8px 22px -10px rgba(140,30,25,.55)}
 .btn-primary:hover{background:var(--vermillion-deep);transform:translateY(-2px)}
 .btn-ghost{background:transparent;color:var(--ink);border:2px solid var(--ink-soft)}
@@ -154,7 +159,7 @@ textarea{min-height:90px;resize:vertical;line-height:1.7}
 .modal-close:hover{color:var(--vermillion)}
 .toggle-auth{text-align:center;margin-top:14px;font-size:13px;color:var(--ink-soft)}
 .toggle-auth a{color:var(--vermillion);cursor:pointer;text-decoration:none;border-bottom:1px dashed var(--vermillion)}
-.form-note{font-size:11px;color:var(--ink-soft);opacity:.75;text-align:center;margin-top:10px;line-height:1.7}
+.form-note{font-size:12.5px;color:var(--ink-soft);opacity:.85;text-align:center;margin-top:10px;line-height:1.7}
 .error-msg{color:var(--vermillion);font-size:12px;margin-top:6px;min-height:16px;text-align:center}
 
 /* ============ 应用骨架 ============ */
@@ -169,13 +174,14 @@ textarea{min-height:90px;resize:vertical;line-height:1.7}
 .brand{padding:0 22px 20px;border-bottom:1px solid rgba(230,216,180,.15);text-align:center}
 .brand .seal-mini{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;background:var(--vermillion);color:#f6e6c8;border-radius:8px;font-family:"ZCOOL XiaoWei",serif;font-size:22px;transform:rotate(-3deg);margin-bottom:8px}
 .brand h2{font-family:"Ma Shan Zheng",cursive;font-size:24px;color:#f3ead4;letter-spacing:.1em}
-.brand p{font-size:11px;letter-spacing:.3em;color:#b8924a;margin-top:2px}
+.brand p{font-size:12px;letter-spacing:.3em;color:#b8924a;margin-top:2px}
 .nav{padding:12px 0;flex:1 0 auto}
 .nav-section{font-size:13px;letter-spacing:.3em;color:#b8924a;padding:16px 22px 8px;opacity:.85}
-.nav-item{display:flex;align-items:center;gap:12px;padding:13px 22px;cursor:pointer;color:#cfc0a0;font-size:16px;transition:all .2s;border-left:3px solid transparent}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 22px;cursor:pointer;color:#cfc0a0;font-size:16px;transition:all .2s;border-left:3px solid transparent;outline:none}
 .nav-item .ic{font-size:19px;width:22px;text-align:center}
 .nav-item:hover{background:rgba(184,48,42,.12);color:#f3ead4}
-.nav-item.active{background:rgba(184,48,42,.18);color:#f6e6c8;border-left-color:var(--vermillion);font-weight:bold}
+.nav-item.active{background:rgba(184,48,42,.22);color:#faecc8;border-left-color:var(--vermillion);text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.nav-item:focus-visible{box-shadow:inset 0 0 0 2px var(--gold);border-radius:2px}
 .user-block{padding:14px 22px 6px;border-top:1px solid rgba(230,216,180,.15)}
 .user-block .uname{font-family:"ZCOOL XiaoWei",serif;font-size:18px;color:#f3ead4}
 .user-block .uinfo{font-size:14px;color:#b8924a;margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -188,6 +194,15 @@ textarea{min-height:90px;resize:vertical;line-height:1.7}
 .crumb{font-family:"ZCOOL XiaoWei",serif;letter-spacing:.15em;font-size:15px;color:var(--ink-3)}
 .theme-btn{background:var(--card-bg-2);border:2px solid var(--bronze);color:var(--ink);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:22px;transition:all .2s;box-shadow:0 2px 8px rgba(184,146,74,.2)}
 .theme-btn:hover{border-color:var(--vermillion);color:var(--vermillion);transform:rotate(20deg);box-shadow:0 4px 14px rgba(178,34,34,.25)}
+/* 联系作者按钮：不旋转，仅放大 + 朱砂高亮 */
+.contact-btn{background:var(--card-bg-2);border:2px solid var(--vermillion);color:var(--vermillion);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:22px;transition:all .2s;box-shadow:0 2px 10px rgba(178,34,34,.22)}
+.contact-btn:hover{background:var(--vermillion);color:#fff;transform:scale(1.08);box-shadow:0 6px 18px rgba(178,34,34,.4)}
+/* 夜间主题下主题按钮激活态：朱砂外环 */
+html[data-theme="night"] .theme-btn{box-shadow:0 0 0 3px rgba(217,72,66,.25),0 2px 8px rgba(184,146,74,.2)}
+html[data-theme="night"] .theme-btn:hover{box-shadow:0 0 0 4px rgba(217,72,66,.45),0 4px 14px rgba(178,34,34,.35)}
+/* 宣纸主题下主题按钮激活态：金色外环 */
+html[data-theme="paper"] .theme-btn,html:not([data-theme]) .theme-btn{box-shadow:0 0 0 3px rgba(184,146,74,.3),0 2px 8px rgba(184,146,74,.2)}
+html[data-theme="paper"] .theme-btn:hover,html:not([data-theme]) .theme-btn:hover{box-shadow:0 0 0 4px rgba(184,146,74,.45),0 4px 14px rgba(178,34,34,.3)}
 .quickstats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
 .qs{display:flex;align-items:center;gap:8px;background:var(--card-bg-2);border:1px solid var(--line);border-radius:24px;padding:8px 20px;font-size:15px;color:var(--ink-3)}
 .qs b{font-family:"ZCOOL XiaoWei",serif;font-size:20px;color:var(--vermillion);font-weight:400}
@@ -196,9 +211,9 @@ textarea{min-height:90px;resize:vertical;line-height:1.7}
 /* ============ 打卡 ============ */
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}
 .cal .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--heat-off);border-radius:4px;color:var(--ink-soft)}
-.cal .day.done{background:var(--vermillion);color:#f6e6c8;font-weight:600}
+.cal .day.done{background:var(--vermillion);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
 .cal .day.today{outline:2px solid var(--gold)}
-.cal .head{font-size:11px;color:var(--ink-soft);text-align:center;padding:4px;font-family:"ZCOOL XiaoWei",serif}
+.cal .head{font-size:12.5px;color:var(--ink-soft);text-align:center;padding:4px;font-family:"ZCOOL XiaoWei",serif}
 .heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,11px);gap:3px;overflow-x:auto;padding-bottom:4px}
 .heat i{width:11px;height:11px;border-radius:2px;background:var(--heat-off)}
 .heat i.on{background:var(--vermillion)}
@@ -300,7 +315,7 @@ html[data-theme="night"] .stamp-seal{background:rgba(30,24,16,.95)}
   font-size:24px;background:rgba(184,48,42,.12);color:var(--vermillion);border:2px solid rgba(184,48,42,.35);
 }
 .ach-card .a-name{font-family:"ZCOOL XiaoWei",serif;font-size:15px;letter-spacing:.1em}
-.ach-card .a-desc{font-size:11.5px;color:var(--ink-soft);margin-top:4px;line-height:1.6}
+.ach-card .a-desc{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.6}
 .ach-card.locked{opacity:.5;filter:grayscale(.8)}
 .ach-card.unlocked{border-color:rgba(184,48,42,.4)}
 
@@ -311,7 +326,7 @@ html[data-theme="night"] .stamp-seal{background:rgba(30,24,16,.95)}
 .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
 .bar{width:100%;max-width:38px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--vermillion),rgba(184,48,42,.55));min-height:3px;transition:height .5s}
 .bar.jade{background:linear-gradient(180deg,var(--jade),rgba(79,122,85,.55))}
-.bar-label{font-size:10.5px;color:var(--ink-soft)}
+.bar-label{font-size:12px;color:var(--ink-soft)}
 
 /* ============ SOS 欲念急救 ============ */
 .fab{
@@ -368,7 +383,7 @@ html[data-theme="night"] .stamp-seal{background:rgba(30,24,16,.95)}
 .cal-cell.cal-done .cal-seal{font-family:"ZCOOL XiaoWei",serif;font-size:18px}
 .cal-cell.cal-miss{background:rgba(184,146,74,.12);color:var(--ink-3)}
 .cal-cell.cal-future{background:transparent;border:1px dashed rgba(184,146,74,.15);color:rgba(184,146,74,.3)}
-.cal-cell.cal-today{box-shadow:0 0 0 2px var(--vermillion);font-weight:700}
+.cal-cell.cal-today{box-shadow:0 0 0 2.5px var(--vermillion);color:var(--vermillion-deep);text-shadow:0 0 1px rgba(184,48,42,.3)}
 .cal-dot{display:inline-block;width:12px;height:12px;border-radius:2px}
 .cal-dot.cal-done{background:var(--vermillion)}
 .cal-dot.cal-miss{background:rgba(184,146,74,.2)}
@@ -474,7 +489,7 @@ html[data-theme="night"] .stamp-seal{background:rgba(30,24,16,.95)}
         <div class="crumb" id="viewCrumb">朱砂戒 · 修行道场</div>
       </div>
       <div class="flex">
-        <button class="theme-btn" onclick="openContact()" title="联系作者">✉</button>
+        <button class="contact-btn" onclick="openContact()" title="联系作者">✉</button>
         <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="墨夜 / 宣纸">◐</button>
         <span class="crumb" id="topDate"></span>
       </div>
@@ -485,7 +500,7 @@ html[data-theme="night"] .stamp-seal{background:rgba(30,24,16,.95)}
 </div>
 
 <!-- ============ 联系作者 ============ -->
-<div class="modal-mask" id="contactMask" style="display:none">
+<div class="modal-mask" id="contactMask">
   <div class="modal" style="max-width:440px">
     <button class="modal-close" onclick="closeContact()">×</button>
     <h3>联 系 作 者</h3>
@@ -829,7 +844,7 @@ function checkAch(){
 /* ---------- 主题 ---------- */
 function applyTheme(){
   const t=localStorage.getItem("zs_theme")||"paper";
-  document.documentElement.dataset.theme=t==="night"?"night":"";
+  document.documentElement.dataset.theme=t==="night"?"night":"paper";
   document.getElementById("themeBtn").textContent=t==="night"?"☀":"◐";
 }
 function toggleTheme(){
@@ -926,14 +941,26 @@ function showLanding(){
 }
 
 /* ---------- 应用骨架 ---------- */
+function updateTopDate(){
+  const d=new Date();
+  document.getElementById("topDate").textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 · 周${"日一二三四五六"[d.getDay()]} · ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
+let _dateTimer=null;
+function startTopDateTimer(){
+  updateTopDate();
+  if(_dateTimer) clearInterval(_dateTimer);
+  _dateTimer=setInterval(updateTopDate,30000);  // 每 30 秒刷新
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden) updateTopDate();
+  });
+}
 function enterApp(user){
   setMe(user);
   document.getElementById("landing").style.display="none";
   document.getElementById("shell").style.display="grid";
   document.getElementById("sosFab").classList.add("show");
   renderNav();
-  const d=new Date();
-  document.getElementById("topDate").textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 · 周${"日一二三四五六"[d.getDay()]} · ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+  startTopDateTimer();
   navigate(curView);
 }
 function renderNav(){
@@ -1900,10 +1927,10 @@ async function deleteAccount(){
    ============================================================ */
 let sosBreatheTimer=null,sosTimerInt=null,sosLeft=20*60;
 function openContact(){
-  document.getElementById("contactMask").style.display="flex";
+  document.getElementById("contactMask").classList.add("show");
 }
 function closeContact(){
-  document.getElementById("contactMask").style.display="none";
+  document.getElementById("contactMask").classList.remove("show");
 }
 function copyContact(text){
   if(navigator.clipboard&&window.isSecureContext){

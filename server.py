@@ -10,13 +10,16 @@ import json
 import os
 import re
 import hashlib
+import hmac
 import secrets
 import socket
 import sqlite3
 import threading
+import posixpath
 from contextlib import closing
-from datetime import date, timedelta
-from urllib.parse import urlparse, parse_qs
+from datetime import date, timedelta, datetime
+from http import HTTPStatus
+from urllib.parse import urlparse, parse_qs, unquote
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT, "data")
@@ -24,6 +27,15 @@ DB_PATH = os.path.join(DATA_DIR, "zhuosha.db")
 os.makedirs(DATA_DIR, exist_ok=True)
 
 _lock = threading.RLock()
+
+# ---------- 安全/会话常量 ----------
+SESSION_TTL_DAYS = 30          # 会话有效期 30 天
+MAX_BODY_BYTES = 1_048_576     # 请求体上限 1MB
+MAX_QUIZ_SCORE = 8             # 单次答题分数上限
+MAX_BREATHS = 500              # 单次冥想呼吸数上限
+ALLOWED_STATIC_EXT = {".html", ".htm", ".css", ".js", ".jpg", ".jpeg",
+                      ".png", ".gif", ".svg", ".ico", ".webp", ".woff",
+                      ".woff2", ".ttf", ".otf", ".map", ".json", ".webmanifest"}
 
 # ---------- 业务常量（与前端镜像） ----------
 DEEDS = {
@@ -47,7 +59,7 @@ CREATE TABLE IF NOT EXISTS users(
   pomo_count INTEGER DEFAULT 0, quiz_best INTEGER DEFAULT 0, med_breaths INTEGER DEFAULT 0,
   resist_count INTEGER DEFAULT 0, daily TEXT DEFAULT '{}', demo INTEGER DEFAULT 0
 );
-CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY, user_id TEXT, created_at TEXT);
+CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY, user_id TEXT, created_at TEXT, expires_at TEXT);
 CREATE TABLE IF NOT EXISTS checkins(user_id TEXT, date TEXT, UNIQUE(user_id, date));
 CREATE TABLE IF NOT EXISTS challenges(
   id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, days INTEGER,
@@ -98,8 +110,28 @@ def rd(fn):
 
 def init_db():
     with closing(db()) as con:
+        # 启用 WAL 改善读多写少场景的并发
+        con.execute("PRAGMA journal_mode=WAL")
+        con.execute("PRAGMA foreign_keys=ON")
         with con:
             con.executescript(SCHEMA)
+            # 兼容旧库：为 sessions 补 expires_at 列（IF NOT EXISTS 不会改老表）
+            cols = {r[1] for r in con.execute("PRAGMA table_info(sessions)")}
+            if "expires_at" not in cols:
+                con.execute("ALTER TABLE sessions ADD COLUMN expires_at TEXT")
+            # 性能索引（旧库 IF NOT EXISTS 安全幂等）
+            con.executescript("""
+            CREATE INDEX IF NOT EXISTS idx_journal_user ON journal(user_id);
+            CREATE INDEX IF NOT EXISTS idx_health_user ON health(user_id);
+            CREATE INDEX IF NOT EXISTS idx_checkins_user_date ON checkins(user_id, date);
+            CREATE INDEX IF NOT EXISTS idx_likes_user ON likes(user_id);
+            CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
+            CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+            """)
+        # 清理已过期会话
+        with con:
+            con.execute("DELETE FROM sessions WHERE expires_at IS NOT NULL AND expires_at < ?",
+                        (today(),))
 
 
 def hash_pwd(pwd, salt):
@@ -181,20 +213,25 @@ def register(h, user, body, q, m):
         raise ApiError("道号需 1~12 字")
     if not region:
         raise ApiError("请选择所在地区")
-    if len(pwd) < 4:
-        raise ApiError("口令不少于 4 位")
+    if len(pwd) < 4 or len(pwd) > 1024:
+        raise ApiError("口令需 4~1024 字符")
 
     def op(con):
         if con.execute("SELECT 1 FROM users WHERE name=?", (name,)).fetchone():
             raise ApiError("此道号已被占用")
         salt = secrets.token_hex(16)
         i = uid()
-        con.execute(
-            "INSERT INTO users(id,name,pwd,salt,region,goal,vow,created_at) VALUES(?,?,?,?,?,?,?,?)",
-            (i, name, hash_pwd(pwd, salt), salt, region, goal, vow, today()))
+        try:
+            con.execute(
+                "INSERT INTO users(id,name,pwd,salt,region,goal,vow,created_at) VALUES(?,?,?,?,?,?,?,?)",
+                (i, name, hash_pwd(pwd, salt), salt, region, goal, vow, today()))
+        except sqlite3.IntegrityError:
+            # 并发下 UNIQUE(name) 冲突，返回友好错误而非 500
+            raise ApiError("此道号已被占用")
         token = secrets.token_hex(32)
-        con.execute("INSERT INTO sessions(token,user_id,created_at) VALUES(?,?,?)",
-                    (token, i, today()))
+        expires_at = (date.today() + timedelta(days=SESSION_TTL_DAYS)).isoformat()
+        con.execute("INSERT INTO sessions(token,user_id,created_at,expires_at) VALUES(?,?,?,?)",
+                    (token, i, today(), expires_at))
         u = con.execute("SELECT * FROM users WHERE id=?", (i,)).fetchone()
         return token, user_json(con, u)
 
@@ -209,12 +246,14 @@ def login(h, user, body, q, m):
 
     def op(con):
         u = con.execute("SELECT * FROM users WHERE name=?", (name,)).fetchone()
-        if not u or hash_pwd(pwd, u["salt"]) != u["pwd"]:
+        # 常量时间密码比较，规避理论侧信道
+        if not u or not hmac.compare_digest(hash_pwd(pwd, u["salt"]), u["pwd"]):
             raise ApiError("道号或口令有误")
         sync_streak_row(con, u)
         token = secrets.token_hex(32)
-        con.execute("INSERT INTO sessions(token,user_id,created_at) VALUES(?,?,?)",
-                    (token, u["id"], today()))
+        expires_at = (date.today() + timedelta(days=SESSION_TTL_DAYS)).isoformat()
+        con.execute("INSERT INTO sessions(token,user_id,created_at,expires_at) VALUES(?,?,?,?)",
+                    (token, u["id"], today(), expires_at))
         u = con.execute("SELECT * FROM users WHERE id=?", (u["id"],)).fetchone()
         return token, user_json(con, u)
 
@@ -392,7 +431,7 @@ def classic_recite(h, user, body, q, m):
 
 @route("POST", "/meditation")
 def meditation_log(h, user, body, q, m):
-    breaths = max(0, int(body.get("breaths", 0)))
+    breaths = max(0, min(MAX_BREATHS, int(body.get("breaths", 0))))
     gain = 3 * (breaths // 10)
 
     def op(con):
@@ -422,18 +461,21 @@ def pomodoro_log(h, user, body, q, m):
 
 @route("POST", "/quiz")
 def quiz_submit(h, user, body, q, m):
-    score = max(0, int(body.get("score", 0)))
-    total = max(1, int(body.get("total", 8)))
+    # 钳制分数到 [0, MAX_QUIZ_SCORE]，防止前端伪造高分刷功德
+    score = max(0, min(MAX_QUIZ_SCORE, int(body.get("score", 0))))
+    total = max(1, int(body.get("total", MAX_QUIZ_SCORE)))
 
     def op(con):
         u = con.execute("SELECT * FROM users WHERE id=?", (user["id"],)).fetchone()
         best = max(u["quiz_best"], score)
+        # 仅奖励超越历史最佳的部分，避免重复答题刷分
+        gain = max(0, score - u["quiz_best"]) * 2
         con.execute("UPDATE users SET quiz_best=?, merit=merit+? WHERE id=?",
-                    (best, score * 2, user["id"]))
+                    (best, gain, user["id"]))
         u = con.execute("SELECT * FROM users WHERE id=?", (user["id"],)).fetchone()
         return user_json(con, u), best
     uj, best = tx(op)
-    h._json({"ok": True, "user": uj, "best": best, "gain": score * 2, "total": total})
+    h._json({"ok": True, "user": uj, "best": best, "gain": 0, "total": total})
 
 
 @route("POST", "/resist")
@@ -589,7 +631,7 @@ def encourage_add(h, user, body, q, m):
     if not text:
         raise ApiError("请先写下勉语")
     if len(text) > 200:
-        raise ApiError("勉语宜简，勿过百字")
+        raise ApiError("勉语宜简，勿过两百字")
 
     def op(con):
         region = user["region"] or "远方"
@@ -710,7 +752,7 @@ def demo_seed(h, user, body, q, m):
                 con.execute(
                     "INSERT INTO users(id,name,pwd,salt,region,goal,vow,created_at,streak,"
                     "last_checkin,relapse_count,merit,days,pomo_count,quiz_best,med_breaths,"
-                    "resist_count,daily,demo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)",
+                    "resist_count,daily,demo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)",
                     (uid_, nm, hash_pwd(secrets.token_hex(8), salt), salt, rg,
                      random.choice([7, 21, 100, 365]), "", today(), streak,
                      today() if streak > 0 else None, random.randint(0, 9),
@@ -739,6 +781,8 @@ def demo_clear(h, user, body, q, m):
             con.execute("DELETE FROM challenges WHERE user_id=?", (i,))
             con.execute("DELETE FROM journal WHERE user_id=?", (i,))
             con.execute("DELETE FROM health WHERE user_id=?", (i,))
+            con.execute("DELETE FROM likes WHERE user_id=?", (i,))
+            con.execute("DELETE FROM reflections WHERE user_id=?", (i,))
             con.execute("DELETE FROM sessions WHERE user_id=?", (i,))
         con.execute("DELETE FROM users WHERE demo=1")
         return len(ids)
@@ -791,6 +835,8 @@ def account_delete(h, user, body, q, m):
         con.execute("DELETE FROM challenges WHERE user_id=?", (i,))
         con.execute("DELETE FROM journal WHERE user_id=?", (i,))
         con.execute("DELETE FROM health WHERE user_id=?", (i,))
+        con.execute("DELETE FROM likes WHERE user_id=?", (i,))
+        con.execute("DELETE FROM reflections WHERE user_id=?", (i,))
         con.execute("DELETE FROM sessions WHERE user_id=?", (i,))
         con.execute("DELETE FROM users WHERE id=?", (i,))
     tx(op)
@@ -808,14 +854,32 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         pass  # 静默访问日志
 
     # ---- 基础工具 ----
+    def _set_cors_headers(self):
+        """CORS 跨域 + 安全响应头（基于 X-Token 而非 Cookie，可用 *）"""
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Token")
+        self.send_header("Access-Control-Max-Age", "86400")
+        # 安全头
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
+
     def _json(self, obj, status=200):
         body = json.dumps(obj, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
+        self._set_cors_headers()
         self.end_headers()
         self.wfile.write(body)
+
+    def do_OPTIONS(self):
+        """处理 CORS 预检请求"""
+        self.send_response(HTTPStatus.NO_CONTENT)
+        self._set_cors_headers()
+        self.end_headers()
 
     def _body(self):
         try:
@@ -824,6 +888,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             length = 0
         if length <= 0:
             return {}
+        if length > MAX_BODY_BYTES:
+            raise ApiError("请求体过大（上限 1MB）")
         try:
             return json.loads(self.rfile.read(length).decode("utf-8"))
         except Exception:
@@ -833,9 +899,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         tok = self.headers.get("X-Token")
         if not tok:
             return None
+        today_str = today()
         return rd(lambda con: con.execute(
-            "SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token=?",
-            (tok,)).fetchone())
+            "SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id "
+            "WHERE s.token=? AND (s.expires_at IS NULL OR s.expires_at >= ?)",
+            (tok, today_str)).fetchone())
 
     # ---- 分发 ----
     def _dispatch(self, method):
@@ -843,14 +911,25 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         path = parsed.path
         if not path.startswith("/api/"):
             if method == "GET":
-                # 禁止浏览数据库目录
-                if path.startswith("/data"):
+                # 路径规范化（防止 ../、//、./ 绕过访问 data 目录）
+                norm = posixpath.normpath(unquote(path))
+                # 二次检查：规范化后再判 data 目录
+                if norm == "/data" or norm.startswith("/data/"):
+                    return self.send_error(HTTPStatus.FORBIDDEN)
+                # 静态文件后缀白名单（防止数据库 .db 等被直接访问）
+                _, ext = posixpath.splitext(norm.lower())
+                if norm != "/" and ext not in ALLOWED_STATIC_EXT:
                     return self.send_error(HTTPStatus.FORBIDDEN)
                 return super().do_GET()
             return self.send_error(HTTPStatus.METHOD_NOT_ALLOWED)
 
         query = {k: v[0] for k, v in parse_qs(parsed.query).items()}
-        body = self._body() if method in ("POST", "DELETE") else {}
+        try:
+            body = self._body() if method in ("POST", "DELETE") else {}
+        except ApiError as e:
+            return self._json({"ok": False, "error": str(e)}, 400)
+        except Exception as e:
+            return self._json({"ok": False, "error": "请求体解析失败: " + str(e)}, 400)
         api_path = path[len("/api"):]  # 去掉 /api 前缀再匹配路由
         for m, rx, fn, auth in ROUTES:
             if m != method:
