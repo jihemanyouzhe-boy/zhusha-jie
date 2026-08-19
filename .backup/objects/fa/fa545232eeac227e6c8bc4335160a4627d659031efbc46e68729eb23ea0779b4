@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="paper">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>朱砂戒 · 修身养性之地</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3ead4; --paper-2:#ece0c4; --paper-3:#e6d8b4;
+  --ink:#1b1610; --ink-2:#2b2418; --ink-soft:#4a3f2e; --ink-3:#6b5d44; --muted:#8a7a5c;
+  --vermillion:#b8302a; --vermillion-deep:#8a1d18;
+  --jade:#4f7a55; --gold:#b8924a; --bronze:#6f5d36;
+  --card-bg:rgba(255,248,228,.6); --card-bg-2:rgba(255,248,228,.5);
+  --field-bg:rgba(255,250,238,.7);
+  --shadow:0 18px 50px -20px rgba(40,25,10,.35);
+  --line:rgba(40,25,10,.14);
+  --heat-off:rgba(40,25,10,.08);
+}
+html[data-theme="night"]{
+  --paper:#141009; --paper-2:#1a1510; --paper-3:#211a12;
+  --ink:#e9ddc2; --ink-2:#d8caa8; --ink-soft:#a08c68; --ink-3:#c0ad84; --muted:#9a8763;
+  --vermillion:#d94842; --vermillion-deep:#b8302a;
+  --jade:#6ba072; --gold:#d4a85e; --bronze:#a08858;
+  --card-bg:rgba(38,30,20,.62); --card-bg-2:rgba(38,30,20,.5);
+  --field-bg:rgba(28,22,15,.7);
+  --shadow:0 18px 50px -20px rgba(0,0,0,.7);
+  --line:rgba(233,221,194,.14);
+  --heat-off:rgba(233,221,194,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"Noto Serif SC",serif;color:var(--ink);
+  background-image:
+    radial-gradient(circle at 12% 18%,rgba(184,48,42,.05),transparent 40%),
+    radial-gradient(circle at 88% 82%,rgba(79,122,85,.06),transparent 45%),
+    linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);
+  background-color:var(--paper-2);
+  min-height:100vh;overflow-x:hidden;position:relative;
+  transition:background .4s ease,color .4s ease;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.15 0 0 0 0 0.1 0 0 0 0 0.05 0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/></svg>");
+  opacity:.5;mix-blend-mode:multiply;
+}
+html[data-theme="night"] body::before{opacity:.25;mix-blend-mode:overlay}
+.ink-mountains{position:fixed;left:0;right:0;bottom:0;height:220px;z-index:0;pointer-events:none;opacity:.16}
+.app{position:relative;z-index:2}
+
+/* ============ 通用 ============ */
+.btn{
+  font-family:"ZCOOL XiaoWei",serif;font-size:17px;letter-spacing:.18em;
+  padding:14px 34px;border:none;cursor:pointer;border-radius:3px;transition:all .22s ease;
+}
+.btn:focus-visible,.tab:focus-visible,.nav-item:focus-visible,.theme-btn:focus-visible,
+.contact-btn:focus-visible,.quiz-opt:focus-visible,.modal-close:focus-visible,
+.task-row:focus-visible{outline:2px solid var(--vermillion);outline-offset:2px}
+.btn-primary{background:var(--vermillion);color:#f6e6c8;box-shadow:0 8px 22px -10px rgba(140,30,25,.55)}
+.btn-primary:hover{background:var(--vermillion-deep);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--ink);border:2px solid var(--ink-soft)}
+.btn-ghost:hover{background:var(--ink);color:var(--paper)}
+.btn-jade{background:var(--jade);color:#f6f6ea}
+.btn-jade:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.btn-sm{padding:9px 18px;font-size:14px}
+.card{
+  background:var(--card-bg);border:1px solid var(--line);border-radius:6px;
+  padding:26px;transition:transform .22s,box-shadow .22s;backdrop-filter:blur(2px);
+}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.card-title{font-family:"ZCOOL XiaoWei",serif;font-size:21px;letter-spacing:.1em;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.card-title .ic{color:var(--vermillion);font-size:22px}
+.card-sub{font-size:14px;color:var(--ink-3);margin-bottom:16px;letter-spacing:.05em}
+.big-num{font-family:"Ma Shan Zheng",cursive;font-size:56px;color:var(--vermillion);line-height:1.1}
+.big-num small{font-size:18px;color:var(--ink-soft);margin-left:4px}
+.tag{display:inline-block;font-size:13px;padding:3px 11px;border-radius:10px;background:rgba(184,48,42,.12);color:var(--vermillion);letter-spacing:.1em}
+.tag-jade{background:rgba(79,122,85,.16);color:var(--jade)}
+.tag-gold{background:rgba(184,146,74,.2);color:var(--bronze)}
+.tag-ink{background:rgba(120,100,60,.14);color:var(--ink-soft)}
+.muted{color:var(--ink-3);font-size:15px}
+.right{text-align:right}.center{text-align:center}
+.flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grid{display:grid;gap:18px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.spacer{height:18px}
+.empty{text-align:center;padding:36px;color:var(--ink-soft);font-size:14px}
+.success-line{color:var(--jade);font-size:13px;margin-top:8px}
+.progress{height:8px;background:var(--heat-off);border-radius:4px;overflow:hidden;margin-top:8px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--vermillion),var(--gold));border-radius:4px;transition:width .6s ease}
+/* ---------- 进度圆环（功能3） ---------- */
+.ring-wrap{position:relative;width:118px;height:118px;margin:6px auto 2px}
+.ring{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:7;stroke-linecap:round}
+.ring-bg{stroke:var(--heat-off)}
+.ring-fg{stroke:url(#ringGrad);stroke-dasharray:0;stroke-dashoffset:0;transition:stroke-dashoffset .8s ease}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.15}
+.ring-label b{font-family:"ZCOOL XiaoWei",serif;font-size:24px;color:var(--vermillion)}
+.ring-label span{font-size:11px;color:var(--ink-soft);letter-spacing:.1em}
+/* ---------- 每日一签（功能2） ---------- */
+.daily-sign{background:linear-gradient(160deg,rgba(184,146,74,.1),rgba(184,48,42,.06));border:1px dashed var(--bronze);border-radius:10px;padding:14px 16px;position:relative}
+.daily-sign::before{content:"签";position:absolute;top:-9px;right:12px;background:var(--vermillion);color:#f6e6c8;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"ZCOOL XiaoWei",serif;font-size:12px;box-shadow:0 3px 8px -3px rgba(140,30,25,.5)}
+.sign-badge{font-size:12px;color:var(--bronze);letter-spacing:.2em;margin-bottom:5px}
+.sign-badge b{font-family:"Ma Shan Zheng",cursive;font-size:17px;color:var(--vermillion)}
+.sign-txt{font-family:"Ma Shan Zheng",cursive;font-size:19px;color:var(--ink);line-height:1.5}
+.sign-hint{font-size:12px;color:var(--jade);margin-top:6px;letter-spacing:.06em}
+/* ---------- 心绪便签（功能4） ---------- */
+.mood-row{display:flex;gap:8px;flex-wrap:wrap}
+.mood-opt{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 14px;border:1px solid var(--line);border-radius:10px;cursor:pointer;transition:all .2s;background:var(--card-bg-2)}
+.mood-opt:hover{border-color:var(--vermillion);transform:translateY(-2px)}
+.mood-opt.on{border-color:var(--vermillion);background:rgba(184,48,42,.1);box-shadow:0 3px 10px -6px rgba(184,48,42,.4)}
+.mood-opt input{display:none}
+.mood-ic{width:34px;height:34px;border-radius:50%;background:var(--heat-off);display:flex;align-items:center;justify-content:center;font-family:"ZCOOL XiaoWei",serif;font-size:15px;color:var(--ink-soft)}
+.mood-opt.on .mood-ic{background:var(--vermillion);color:#fff}
+.mood-nm{font-size:12.5px;color:var(--ink-soft);letter-spacing:.12em}
+.mood-hist{display:flex;align-items:center;gap:4px;margin-left:auto}
+.mood-dot{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;background:var(--heat-off);color:var(--ink-soft)}
+.mood-dot.on-c{background:rgba(79,122,85,.3);color:var(--jade)}
+.mood-dot.on-m{background:rgba(184,146,74,.3);color:var(--bronze)}
+.mood-dot.on-t{background:rgba(107,93,68,.3);color:var(--ink-soft)}
+.stat-row{display:flex;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap}
+.stat-row .stat{flex:1;min-width:80px;text-align:center;padding:12px 8px;background:var(--heat-off);border-radius:6px}
+.stat .v{font-family:"ZCOOL XiaoWei",serif;font-size:24px;color:var(--ink)}
+.stat .l{font-size:13px;color:var(--ink-soft);margin-top:3px;letter-spacing:.1em}
+.tab-row{display:flex;gap:8px;margin:6px 0 16px;flex-wrap:wrap}
+.tab{padding:9px 20px;font-size:15px;cursor:pointer;border-radius:20px;background:var(--heat-off);color:var(--ink-3);font-family:"ZCOOL XiaoWei",serif;letter-spacing:.08em;transition:all .2s;border:none}
+.tab.active,.tab:hover{background:var(--ink);color:var(--paper)}
+/* 排序切换（功能7） */
+.sort-tabs{display:inline-flex;gap:4px;margin-left:auto;background:var(--heat-off);border-radius:14px;padding:3px}
+.sort-tab{font-size:12px;padding:3px 12px;border-radius:11px;cursor:pointer;color:var(--ink-3);transition:all .2s;letter-spacing:.08em}
+.sort-tab.on{background:var(--vermillion);color:#fff;box-shadow:0 2px 6px -2px rgba(140,30,25,.5)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:6px;letter-spacing:.1em}
+.field input,.field select,.field textarea{
+  width:100%;padding:13px 15px;font-family:"Noto Serif SC",serif;font-size:16px;
+  background:var(--field-bg);border:1px solid var(--line);border-radius:3px;color:var(--ink);transition:border-color .2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--vermillion)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+textarea{min-height:90px;resize:vertical;line-height:1.7}
+.entry{padding:16px;border-left:4px solid var(--vermillion);background:var(--card-bg-2);margin-bottom:12px;border-radius:0 6px 6px 0}
+.entry .meta{font-size:14px;color:var(--ink-3);margin-bottom:8px;letter-spacing:.1em;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.entry .txt{font-size:16px;line-height:1.8;color:var(--ink);white-space:pre-wrap}
+.entry-actions a{font-size:12px;color:var(--ink-soft);cursor:pointer}
+.entry-actions a:hover{color:var(--vermillion)}
+.scroll-y{max-height:340px;overflow-y:auto}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.fade-up{animation:fadeUp .45s ease both}
+@keyframes stampIn{0%{transform:scale(2.4) rotate(10deg);opacity:0}60%{transform:scale(.94) rotate(-9deg);opacity:1}100%{transform:scale(1) rotate(-8deg);opacity:1}}
+
+/* ============ 落地页 ============ */
+.landing{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px}
+.landing-inner{max-width:1000px;width:100%;text-align:center;position:relative}
+.vertical-title{position:absolute;left:-14px;top:0;writing-mode:vertical-rl;font-family:"Ma Shan Zheng",cursive;font-size:14px;color:var(--ink-soft);letter-spacing:.4em;opacity:.55}
+.hero-seal{
+  width:84px;height:84px;border-radius:14px;
+  object-fit:cover;
+  box-shadow:0 8px 26px -8px rgba(140,30,25,.6),inset 0 0 0 3px rgba(255,230,200,.25);
+  transform:rotate(-4deg);position:relative;
+}
+.hero-seal::after{content:"";position:absolute;inset:6px;border:1px solid rgba(255,230,200,.4);border-radius:8px;pointer-events:none}
+.hero-title{font-family:"Ma Shan Zheng",cursive;font-size:clamp(56px,9vw,116px);line-height:1;margin:18px 0 6px;color:var(--ink);letter-spacing:.06em;text-shadow:2px 3px 0 rgba(184,48,42,.12)}
+.hero-sub{font-family:"ZCOOL XiaoWei",serif;font-size:clamp(15px,2vw,21px);color:var(--ink-soft);letter-spacing:.5em;margin-bottom:8px}
+.hero-couplet{font-weight:300;color:var(--ink-soft);font-size:15px;margin:22px auto 30px;max-width:560px;line-height:2.1}
+.hero-couplet span{color:var(--vermillion);font-weight:500}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.feature-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:48px;text-align:left}
+.feature-card{background:var(--card-bg-2);border:1px solid var(--line);padding:16px;border-radius:4px;transition:transform .25s,box-shadow .25s}
+.feature-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.feature-card .ic{font-size:22px;color:var(--vermillion);margin-bottom:8px;display:block}
+.feature-card h4{font-family:"ZCOOL XiaoWei",serif;font-size:16px;letter-spacing:.1em;margin-bottom:4px}
+.feature-card p{font-size:12.5px;color:var(--ink-soft);line-height:1.7}
+
+/* ============ 弹窗 ============ */
+.modal-mask{position:fixed;inset:0;background:rgba(20,15,8,.55);backdrop-filter:blur(4px);z-index:150;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-mask.show{display:flex;animation:fadeIn .25s ease}
+.modal{
+  background:linear-gradient(180deg,var(--paper),var(--paper-3));border:1px solid var(--line);border-radius:6px;
+  width:100%;max-width:430px;padding:34px 32px 26px;position:relative;box-shadow:0 30px 80px -30px rgba(0,0,0,.5);
+  animation:popIn .32s cubic-bezier(.2,.9,.3,1.15);max-height:92vh;overflow-y:auto;color:var(--ink);
+}
+.modal::before{content:"";position:absolute;top:14px;left:14px;right:14px;bottom:14px;border:1px solid var(--line);pointer-events:none;border-radius:3px}
+.modal h3{font-family:"Ma Shan Zheng",cursive;font-size:30px;text-align:center;margin-bottom:4px}
+.modal .sub{text-align:center;font-family:"ZCOOL XiaoWei",serif;letter-spacing:.3em;color:var(--ink-soft);font-size:12px;margin-bottom:22px}
+.modal-close{position:absolute;top:10px;right:14px;cursor:pointer;font-size:22px;color:var(--ink-soft);background:none;border:none;z-index:2}
+.modal-close:hover{color:var(--vermillion)}
+.toggle-auth{text-align:center;margin-top:14px;font-size:13px;color:var(--ink-soft)}
+.toggle-auth a{color:var(--vermillion);cursor:pointer;text-decoration:none;border-bottom:1px dashed var(--vermillion)}
+.form-note{font-size:12.5px;color:var(--ink-soft);opacity:.85;text-align:center;margin-top:10px;line-height:1.7}
+.error-msg{color:var(--vermillion);font-size:12px;margin-top:6px;min-height:16px;text-align:center}
+
+/* ============ 应用骨架 ============ */
+.shell{display:grid;grid-template-columns:245px 1fr;min-height:100vh}
+.sidebar{
+  background:linear-gradient(180deg,#2b2418 0%,#1b1610 100%);color:#e6d8b4;
+  padding:24px 0 14px;position:sticky;top:0;height:100vh;overflow-y:auto;
+  border-right:3px solid var(--vermillion);display:flex;flex-direction:column;
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(184,146,74,.3);border-radius:3px}
+.brand{padding:0 22px 20px;border-bottom:1px solid rgba(230,216,180,.15);text-align:center}
+.brand .seal-mini{width:46px;height:46px;background:var(--vermillion);color:#f6e6c8;border-radius:8px;transform:rotate(-3deg);margin-bottom:8px;object-fit:cover}
+.brand h2{font-family:"Ma Shan Zheng",cursive;font-size:24px;color:#f3ead4;letter-spacing:.1em}
+.brand p{font-size:12px;letter-spacing:.3em;color:#b8924a;margin-top:2px}
+.nav{padding:12px 0;flex:1 0 auto}
+.nav-section{font-size:13px;letter-spacing:.3em;color:#b8924a;padding:16px 22px 8px;opacity:.85}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 22px;cursor:pointer;color:#cfc0a0;font-size:16px;transition:all .2s;border-left:3px solid transparent;outline:none}
+.nav-item .ic{font-size:19px;width:22px;text-align:center}
+.nav-item:hover{background:rgba(184,48,42,.12);color:#f3ead4}
+.nav-item.active{background:rgba(184,48,42,.22);color:#faecc8;border-left-color:var(--vermillion);text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.nav-item:focus-visible{box-shadow:inset 0 0 0 2px var(--gold);border-radius:2px}
+.user-block{padding:14px 22px 6px;border-top:1px solid rgba(230,216,180,.15)}
+.user-block .uname{font-family:"ZCOOL XiaoWei",serif;font-size:18px;color:#f3ead4}
+.user-block .uinfo{font-size:14px;color:#b8924a;margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.user-block .logout{margin-top:10px;font-size:15px;color:#c87b75;cursor:pointer}
+.user-block .logout:hover{color:#f6e6c8}
+
+.main{padding:28px 40px 80px;max-width:1120px;width:100%}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:14px;flex-wrap:wrap}
+.topbar h1{font-family:"Ma Shan Zheng",cursive;font-size:38px;color:var(--ink);letter-spacing:.06em}
+.crumb{font-family:"ZCOOL XiaoWei",serif;letter-spacing:.15em;font-size:15px;color:var(--ink-3)}
+.topclock{display:flex;flex-direction:column;align-items:flex-end;gap:2px;line-height:1.2}
+.stamp-greet{display:flex;align-items:center;gap:7px;color:var(--ink-soft);font-family:"ZCOOL XiaoWei",serif;letter-spacing:.14em;font-size:13px}
+.stamp-greet em{font-style:normal;color:var(--jade);font-weight:500}
+.sc-seal{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--vermillion);color:#f6e6c8;border-radius:5px;font-size:13px;transform:rotate(-4deg);box-shadow:0 2px 6px rgba(140,30,25,.35)}
+.theme-btn{background:var(--card-bg-2);border:2px solid var(--bronze);color:var(--ink);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:22px;transition:all .2s;box-shadow:0 2px 8px rgba(184,146,74,.2)}
+.theme-btn:hover{border-color:var(--vermillion);color:var(--vermillion);transform:rotate(20deg);box-shadow:0 4px 14px rgba(178,34,34,.25)}
+/* 联系作者按钮：不旋转，仅放大 + 朱砂高亮 */
+.contact-btn{background:var(--card-bg-2);border:2px solid var(--vermillion);color:var(--vermillion);width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:22px;transition:all .2s;box-shadow:0 2px 10px rgba(178,34,34,.22)}
+.contact-btn:hover{background:var(--vermillion);color:#fff;transform:scale(1.08);box-shadow:0 6px 18px rgba(178,34,34,.4)}
+/* 夜间主题下主题按钮激活态：朱砂外环 */
+html[data-theme="night"] .theme-btn{box-shadow:0 0 0 3px rgba(217,72,66,.25),0 2px 8px rgba(184,146,74,.2)}
+html[data-theme="night"] .theme-btn:hover{box-shadow:0 0 0 4px rgba(217,72,66,.45),0 4px 14px rgba(178,34,34,.35)}
+/* 宣纸主题下主题按钮激活态：金色外环 */
+html[data-theme="paper"] .theme-btn,html:not([data-theme]) .theme-btn{box-shadow:0 0 0 3px rgba(184,146,74,.3),0 2px 8px rgba(184,146,74,.2)}
+html[data-theme="paper"] .theme-btn:hover,html:not([data-theme]) .theme-btn:hover{box-shadow:0 0 0 4px rgba(184,146,74,.45),0 4px 14px rgba(178,34,34,.3)}
+.quickstats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.qs{display:flex;align-items:center;gap:8px;background:var(--card-bg-2);border:1px solid var(--line);border-radius:24px;padding:8px 20px;font-size:15px;color:var(--ink-3)}
+/* 名言横幅 */
+.quote-banner{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--vermillion),var(--bronze));border-radius:14px;padding:16px 22px;margin-bottom:24px;box-shadow:0 8px 22px -10px rgba(140,30,25,.55);display:flex;align-items:center;gap:16px}
+.quote-banner::after{content:"";position:absolute;right:-26px;top:-34px;width:120px;height:120px;border:2px dashed rgba(255,255,255,.22);border-radius:50%}
+.qb-seal{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;font-family:"ZCOOL XiaoWei",serif;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px -4px rgba(0,0,0,.3)}
+.qb-body{flex:1;min-width:0}
+.qb-text{font-family:"Ma Shan Zheng",cursive;font-size:21px;color:#fff;line-height:1.5;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 6px rgba(0,0,0,.18);transition:opacity .4s ease,transform .4s ease}
+.qb-author{font-size:12px;color:rgba(255,255,255,.85);margin-top:2px;letter-spacing:.15em}
+.qb-nav{flex:0 0 auto;display:flex;gap:6px}
+.qb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:all .25s}
+.qb-dot.on{background:#fff;transform:scale(1.3);box-shadow:0 0 0 3px rgba(255,255,255,.22)}
+.qb-arrow{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.08);cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.qb-arrow:hover{background:rgba(255,255,255,.22)}
+@media(max-width:640px){.qb-text{font-size:17px;white-space:normal}.quote-banner{flex-wrap:wrap;gap:10px;padding:14px 16px}.qb-arrow{display:none}}
+.qs b{font-family:"ZCOOL XiaoWei",serif;font-size:20px;color:var(--vermillion);font-weight:400}
+.view{animation:fadeUp .35s ease}
+
+/* ============ 打卡 ============ */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}
+.cal .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--heat-off);border-radius:4px;color:var(--ink-soft)}
+.cal .day.done{background:var(--vermillion);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.cal .day.today{outline:2px solid var(--gold)}
+.cal .head{font-size:12.5px;color:var(--ink-soft);text-align:center;padding:4px;font-family:"ZCOOL XiaoWei",serif}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,11px);gap:3px;overflow-x:auto;padding-bottom:4px}
+.heat i{width:11px;height:11px;border-radius:2px;background:var(--heat-off)}
+.heat i.on{background:var(--vermillion)}
+.heat i.today{outline:1.5px solid var(--gold)}
+.task-row{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--card-bg-2);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .22s;user-select:none}
+.task-row:hover{border-color:var(--vermillion);transform:translateX(3px);box-shadow:0 3px 10px -6px rgba(184,48,42,.3)}
+.task-row .box{width:22px;height:22px;border:1.5px solid var(--ink-soft);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--vermillion);flex:none;transition:all .2s}
+.task-row.done .box{border-color:var(--vermillion);background:linear-gradient(135deg,var(--vermillion),var(--vermillion-deep));color:#fff;box-shadow:0 2px 6px -2px rgba(140,30,25,.5)}
+.task-row.done .tname{color:var(--ink-soft);text-decoration:line-through}
+.task-row .tname{font-size:14.5px;font-weight:500}
+.task-row .tmerit{margin-left:auto;font-size:11.5px;color:var(--bronze);background:rgba(184,146,74,.14);padding:2px 9px;border-radius:9px}
+.celebrate{position:fixed;inset:0;background:rgba(20,10,5,.5);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeIn .2s}
+.stamp-seal{
+  width:190px;height:190px;border:7px solid var(--vermillion);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  font-family:"Ma Shan Zheng",cursive;font-size:40px;color:var(--vermillion);
+  background:rgba(248,238,216,.93);animation:stampIn .55s cubic-bezier(.2,1.4,.4,1);
+  box-shadow:0 0 0 6px rgba(248,238,216,.4),0 24px 60px -20px rgba(0,0,0,.5);
+}
+.stamp-seal small{font-family:"ZCOOL XiaoWei",serif;font-size:13px;letter-spacing:.3em;margin-top:6px;color:var(--bronze)}
+html[data-theme="night"] .stamp-seal{background:rgba(30,24,16,.95)}
+
+/* ============ 榜单 ============ */
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{font-family:"ZCOOL XiaoWei",serif;font-size:12px;letter-spacing:.18em;color:var(--ink-soft);text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+.lb-table td{padding:11px 8px;border-bottom:1px dashed var(--line);font-size:13.5px}
+.lb-row.red{background:rgba(184,48,42,.05)}
+.lb-row.black{background:rgba(40,25,10,.05)}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;font-family:"ZCOOL XiaoWei",serif;font-size:13px}
+.rank-1{background:#c79a3a;color:#fff}.rank-2{background:#9a9a9a;color:#fff}.rank-3{background:#b07644;color:#fff}
+.rank-n{background:var(--heat-off);color:var(--ink-soft)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.dot-red{background:var(--vermillion)}.dot-black{background:var(--ink)}
+.search-input{padding:8px 14px;border-radius:20px;border:1px solid var(--line);background:var(--field-bg);color:var(--ink);font-family:"Noto Serif SC",serif;font-size:13px;width:200px;outline:none}
+.search-input:focus{border-color:var(--vermillion)}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:18px 0 8px}
+.pod{background:var(--card-bg-2);border:1px solid var(--line);border-radius:6px 6px 0 0;text-align:center;padding:14px 10px 10px;flex:1;max-width:150px;transition:transform .25s}
+.pod:hover{transform:translateY(-4px)}
+.pod .p-rank{font-size:22px}
+.pod-1 .p-rank{color:#c79a3a}.pod-2 .p-rank{color:#9a9a9a}.pod-3 .p-rank{color:#b07644}
+.pod .p-region{font-family:"ZCOOL XiaoWei",serif;font-size:17px;margin:4px 0;letter-spacing:.1em}
+.pod .p-num{font-size:12px;color:var(--ink-soft)}
+.pod-1{padding-bottom:26px;border-bottom:4px solid #c79a3a}
+.pod-2{padding-bottom:14px;border-bottom:4px solid #9a9a9a}
+.pod-3{padding-bottom:8px;border-bottom:4px solid #b07644}
+.my-region-card{border:1.5px solid var(--gold);border-radius:6px;padding:14px 18px;margin-bottom:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:rgba(184,146,74,.08)}
+.my-region-card .mr-name{font-family:"Ma Shan Zheng",cursive;font-size:26px;color:var(--ink)}
+.my-region-card .mr-item{font-size:13px;color:var(--ink-soft)}
+.my-region-card .mr-item b{font-family:"ZCOOL XiaoWei",serif;font-size:18px;color:var(--vermillion);font-weight:400}
+
+/* ============ 冥想 ============ */
+.meditate-stage{display:flex;flex-direction:column;align-items:center;padding:30px 16px;text-align:center}
+.zen-circle{
+  width:210px;height:210px;border-radius:50%;border:3px solid var(--ink);position:relative;
+  display:flex;align-items:center;justify-content:center;transition:transform 1s ease,border-color 1s ease;
+}
+.zen-circle.breathe-in{transform:scale(1.12);border-color:var(--jade)}
+.zen-circle.breathe-out{transform:scale(.9);border-color:var(--vermillion)}
+.zen-text{font-family:"Ma Shan Zheng",cursive;font-size:30px;color:var(--ink)}
+.zen-count{font-family:"ZCOOL XiaoWei",serif;font-size:15px;color:var(--ink-soft);margin-top:6px}
+
+/* ============ 答题 ============ */
+.quiz-q{font-family:"ZCOOL XiaoWei",serif;font-size:19px;margin-bottom:16px;line-height:1.7}
+.quiz-opt{display:block;width:100%;text-align:left;padding:12px 16px;margin-bottom:10px;background:var(--card-bg);border:1px solid var(--line);border-radius:4px;cursor:pointer;font-family:"Noto Serif SC",serif;font-size:14px;transition:all .2s;color:var(--ink)}
+.quiz-opt:hover{border-color:var(--vermillion)}
+.quiz-opt.correct{background:rgba(79,122,85,.16);border-color:var(--jade);color:var(--jade)}
+.quiz-opt.wrong{background:rgba(184,48,42,.12);border-color:var(--vermillion);color:var(--vermillion)}
+
+/* ============ 锦囊 / 树洞 ============ */
+.quote-card{
+  background:linear-gradient(135deg,rgba(184,146,74,.14),rgba(184,48,42,.07));
+  padding:38px 28px;border-radius:6px;text-align:center;border:1px solid var(--line);margin:14px 0;box-shadow:var(--shadow);transition:opacity .25s;
+}
+.quote-text{font-family:"Ma Shan Zheng",cursive;font-size:25px;color:var(--ink);line-height:1.7}
+.quote-author{font-family:"ZCOOL XiaoWei",serif;font-size:13px;color:var(--ink-soft);letter-spacing:.3em;margin-top:12px}
+.seal-corner{font-size:11px;color:var(--vermillion);font-family:"ZCOOL XiaoWei",serif;border:1px solid var(--vermillion);padding:2px 8px;border-radius:2px;opacity:.75;display:inline-block;margin-bottom:10px}
+.tree-hole{background:var(--card-bg-2);border:1px dashed var(--line);padding:14px;border-radius:4px;margin-bottom:10px}
+.tree-hole .anon{font-size:11px;color:var(--bronze);letter-spacing:.1em;margin-bottom:6px}
+.tree-hole .msg{font-size:14px;line-height:1.8;white-space:pre-wrap}
+.tree-hole .hearts{margin-top:8px;font-size:12px;color:var(--vermillion);cursor:pointer;user-select:none}
+.tree-hole .hearts:hover{text-decoration:underline}
+.tree-hole .hearts.liked,.btn-ghost.liked,.btn-ghost:disabled{color:var(--muted);cursor:default;opacity:.6}
+.tree-hole .hearts.liked:hover,.btn-ghost.liked:hover{text-decoration:none;background:transparent;color:var(--muted)}
+
+/* ============ 等级 / 成就 ============ */
+.level-badge{
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  width:124px;height:124px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#f0d68a,#b8924a);
+  color:#3a2a08;font-family:"Ma Shan Zheng",cursive;
+  box-shadow:0 10px 30px -10px rgba(184,146,74,.6),inset 0 0 0 4px rgba(255,255,255,.2);margin:6px auto 12px;
+}
+.level-badge .lv{font-size:12px;letter-spacing:.2em;font-family:"ZCOOL XiaoWei",serif}
+.level-badge .nm{font-size:23px;line-height:1.15;text-align:center;margin-top:3px}
+.ach-card{text-align:center;padding:18px 12px;border-radius:6px;border:1px solid var(--line);background:var(--card-bg-2);transition:transform .25s}
+.ach-card:hover{transform:translateY(-4px)}
+.ach-card .a-ic{
+  width:54px;height:54px;margin:0 auto 10px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:24px;background:rgba(184,48,42,.12);color:var(--vermillion);border:2px solid rgba(184,48,42,.35);
+}
+.ach-card .a-name{font-family:"ZCOOL XiaoWei",serif;font-size:15px;letter-spacing:.1em}
+.ach-card .a-desc{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.6}
+.ach-card.locked{opacity:.5;filter:grayscale(.8)}
+.ach-card.unlocked{border-color:rgba(184,48,42,.4)}
+
+/* ============ 番茄 / 健康 ============ */
+.pomo-display{font-family:"Ma Shan Zheng",cursive;font-size:78px;text-align:center;line-height:1;margin:16px 0}
+.pomo-controls{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.bars{display:flex;align-items:flex-end;gap:8px;height:130px;padding:8px 4px 0}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar{width:100%;max-width:38px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--vermillion),rgba(184,48,42,.55));min-height:3px;transition:height .5s}
+.bar.jade{background:linear-gradient(180deg,var(--jade),rgba(79,122,85,.55))}
+.bar-label{font-size:12px;color:var(--ink-soft)}
+
+/* ============ SOS 欲念急救 ============ */
+.fab{
+  position:fixed;right:26px;bottom:26px;z-index:90;width:70px;height:70px;border-radius:50%;
+  background:var(--vermillion);color:#f6e6c8;border:3px solid rgba(255,230,200,.5);
+  font-family:"Ma Shan Zheng",cursive;font-size:30px;cursor:pointer;
+  box-shadow:0 12px 30px -8px rgba(140,30,25,.7);display:none;transition:transform .2s;
+}
+.fab:hover{transform:scale(1.1) rotate(-6deg)}
+.fab.show{display:block}
+.sos-overlay{position:fixed;inset:0;z-index:180;display:none;background:linear-gradient(180deg,rgba(26,10,6,.97),rgba(46,14,10,.97));color:#f0e4c8;overflow-y:auto;padding:26px 18px}
+.sos-overlay.show{display:block;animation:fadeIn .2s}
+.sos-inner{max-width:640px;margin:0 auto}
+.sos-title{font-family:"Ma Shan Zheng",cursive;font-size:38px;text-align:center;color:#f0b9a8}
+.sos-sub{text-align:center;font-size:13px;letter-spacing:.3em;color:#c9a58f;margin:6px 0 22px}
+.sos-card{background:rgba(255,235,215,.07);border:1px solid rgba(255,200,170,.25);border-radius:8px;padding:18px;margin-bottom:14px}
+.sos-card h4{font-family:"ZCOOL XiaoWei",serif;font-size:16px;letter-spacing:.15em;margin-bottom:10px;color:#f0c9b4}
+.sos-card ul{list-style:none}
+.sos-card li{padding:7px 0 7px 24px;position:relative;font-size:14px;line-height:1.7;cursor:pointer;user-select:none}
+.sos-card li::before{content:"";position:absolute;left:0;top:11px;width:14px;height:14px;border:1.5px solid #d9a08a;border-radius:3px}
+.sos-card li.ok{color:#9dbb9f}
+.sos-card li.ok::after{content:"✓";position:absolute;left:2px;top:4px;color:#9dbb9f;font-size:13px}
+.sos-breathe{display:flex;flex-direction:column;align-items:center;padding:10px 0}
+.sos-circle{
+  width:150px;height:150px;border-radius:50%;border:3px solid #d9a08a;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;transition:transform 1s ease;font-family:"Ma Shan Zheng",cursive;font-size:26px;
+}
+.sos-circle.in{transform:scale(1.14);border-color:#9dbb9f}
+.sos-circle.out{transform:scale(.88);border-color:#e88a74}
+.sos-timer{font-family:"Ma Shan Zheng",cursive;font-size:52px;text-align:center;margin:8px 0}
+.sos-victory{display:block;width:100%;padding:16px;font-size:18px;letter-spacing:.3em;font-family:"ZCOOL XiaoWei",serif;background:var(--jade);color:#f4f6ec;border:none;border-radius:6px;cursor:pointer;transition:filter .2s}
+.sos-victory:hover{filter:brightness(1.12)}
+
+/* ============ Toast ============ */
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--ink-2);color:var(--paper);padding:12px 26px;border-radius:3px;font-family:"ZCOOL XiaoWei",serif;letter-spacing:.15em;z-index:300;opacity:0;transition:all .3s;pointer-events:none;border-left:3px solid var(--vermillion);max-width:86vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+
+/* ============ 联系作者 ============ */
+.hero-contact{margin-top:28px;text-align:center}
+.contact-body{display:flex;flex-direction:column;gap:16px;margin:20px 0}
+.contact-row{display:flex;align-items:center;gap:14px;padding:18px 18px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg-2);transition:all .2s}
+.contact-row:hover{border-color:var(--bronze);box-shadow:0 2px 12px rgba(184,146,74,.15)}
+.contact-ic{display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:var(--vermillion);color:#fff;font-size:18px;font-family:"ZCOOL XiaoWei",serif;flex-shrink:0;box-shadow:0 4px 12px rgba(178,34,34,.25)}
+.contact-info{flex:1;min-width:0}
+.contact-label{font-size:14px;color:var(--ink-3);letter-spacing:.1em;margin-bottom:4px}
+.contact-val{font-size:18px;color:var(--ink-2);font-family:inherit;word-break:break-all;font-weight:500}
+
+/* ============ 戒色日历 ============ */
+.cal-week-row{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px}
+.cal-week{text-align:center;font-size:15px;color:var(--muted);padding:6px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:16px;color:var(--muted);background:rgba(184,146,74,.06);transition:all .2s;cursor:default;position:relative}
+.cal-cell.cal-done{background:var(--vermillion);color:#fff}
+.cal-cell.cal-done .cal-seal{font-family:"ZCOOL XiaoWei",serif;font-size:18px}
+.cal-cell.cal-miss{background:rgba(184,146,74,.12);color:var(--ink-3)}
+.cal-cell.cal-future{background:transparent;border:1px dashed rgba(184,146,74,.15);color:rgba(184,146,74,.3)}
+.cal-cell.cal-today{box-shadow:0 0 0 2.5px var(--vermillion);color:var(--vermillion-deep);text-shadow:0 0 1px rgba(184,48,42,.3)}
+.cal-dot{display:inline-block;width:12px;height:12px;border-radius:2px}
+.cal-dot.cal-done{background:var(--vermillion)}
+.cal-dot.cal-miss{background:rgba(184,146,74,.2)}
+.cal-dot.cal-future{background:transparent;border:1px dashed rgba(184,146,74,.3)}
+.cal-dot.cal-relapse{background:#555}
+
+/* ============ 定力试炼 ============ */
+.wp-scene{padding:18px 12px;text-align:center;border:1px dashed var(--line);border-radius:6px;background:rgba(184,146,74,.04)}
+.wp-ring{position:relative;width:140px;height:140px;margin:0 auto 8px}
+.wp-ring-txt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;font-family:"ZCOOL XiaoWei",serif;color:var(--vermillion)}
+.wp-hold-btn{display:block;width:100%;max-width:320px;margin:0 auto;font-size:18px;padding:14px;background:var(--ink-2);color:var(--paper);user-select:none;touch-action:none}
+.wp-hold-btn:active{background:var(--vermillion);transform:scale(.98)}
+.field-label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;letter-spacing:.05em}
+.input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:rgba(255,255,255,.5);font-size:14px;color:var(--ink-2)}
+.input:focus{outline:none;border-color:var(--vermillion)}
+
+/* ============ 响应式 ============ */
+.menu-toggle{display:none;position:fixed;top:16px;left:16px;z-index:130;background:var(--ink-2);color:var(--paper);border:none;width:42px;height:42px;border-radius:4px;font-size:19px;cursor:pointer;box-shadow:0 2px 10px rgba(31,26,20,.35);transition:left .3s,background .3s}
+.side-mask{display:none}
+@media(max-width:880px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-265px;top:0;width:245px;height:100vh;z-index:110;transition:left .3s}
+  .sidebar.open{left:0}
+  .main{padding:76px 16px 70px}
+  .topbar h1{font-size:27px}
+  .menu-toggle{display:block}
+  .menu-toggle.open{left:253px;background:var(--vermillion)}
+  .side-mask.show{display:block;position:fixed;inset:0;background:rgba(31,26,20,.45);z-index:105}
+  .fab{right:16px;bottom:16px;width:56px;height:56px;font-size:23px}
+}
+</style>
+</head>
+<body>
+<svg class="ink-mountains" viewBox="0 0 1440 220" preserveAspectRatio="none">
+  <path d="M0,220 L0,160 Q120,90 240,140 T480,120 Q600,70 720,130 T960,110 Q1080,60 1200,140 T1440,120 L1440,220 Z" fill="#1b1610"/>
+  <path d="M0,220 L0,180 Q150,140 300,170 T600,160 Q750,120 900,170 T1200,160 L1440,180 L1440,220 Z" fill="#2b2418" opacity=".7"/>
+</svg>
+
+<!-- ============ 落地页 ============ -->
+<section class="app landing" id="landing">
+  <div class="landing-inner fade-up">
+    <span class="vertical-title">修身 · 戒色 · 养气 · 守心</span>
+    <div class="hero-seal">戒</div>
+    <h1 class="hero-title">朱砂戒</h1>
+    <p class="hero-sub">守元精 · 立志向 · 修身心</p>
+    <p class="hero-couplet">
+      <span>色欲之害，伤身败德。</span>古之圣贤，皆以节欲为本。<br/>
+      此地非批判，乃<span>同修共勉</span>之地；非禁锢，乃<span>立志守心</span>之所。<br/>
+      愿君于此，渐次清明，得<span>自在安宁</span>。
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="openAuth('register')">立 戒 入 道</button>
+      <button class="btn btn-ghost" onclick="openAuth('login')">已 是 戒 友 · 登 录</button>
+    </div>
+    <div class="feature-strip">
+      <div class="feature-card"><span class="ic">●</span><h4>云端账号</h4><p>注册登录填地区，数据存于服务器。</p></div>
+      <div class="feature-card"><span class="ic">▲</span><h4>红黑榜</h4><p>以地区为鉴，匿名排名前二十。</p></div>
+      <div class="feature-card"><span class="ic">✦</span><h4>欲念急救</h4><p>冲动来袭，一键守心，呼吸定神。</p></div>
+      <div class="feature-card"><span class="ic">★</span><h4>成就殿堂</h4><p>十六枚成就徽章，见证蜕变之路。</p></div>
+      <div class="feature-card"><span class="ic">◐</span><h4>专注番茄</h4><p>二十五分专注，远离欲念纷扰。</p></div>
+      <div class="feature-card"><span class="ic">卍</span><h4>十六法门</h4><p>打卡、诵读、树洞、答题……一应俱全。</p></div>
+    </div>
+    <div class="hero-contact">
+      <button class="btn btn-ghost btn-sm" onclick="openContact()">✉ 联 系 作 者 · 加 入 戒 群</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 登录注册 ============ -->
+<div class="modal-mask" id="authMask">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+    <h3 id="authTitle">立 戒 入 道</h3>
+    <p class="sub" id="authSub">SIGN UP · 守 戒 同 修</p>
+    <div id="authBody"></div>
+    <p class="error-msg" id="authErr"></p>
+    <p class="toggle-auth" id="authToggle"></p>
+    <p class="form-note">账号数据存于服务器数据库 · 请以真诚之心填写，立志守戒。</p>
+  </div>
+</div>
+
+<!-- ============ 应用 ============ -->
+<div class="shell" id="shell" style="display:none">
+  <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">☰</button>
+  <div class="side-mask" id="sideMask" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="seal-mini">戒</div>
+      <h2>朱砂戒</h2>
+      <p>守 心 · 修 身</p>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="user-block">
+      <div class="uname" id="sideName">—</div>
+      <div class="uinfo" id="sideInfo"></div>
+      <div class="logout" onclick="logout()">退 出 登 录 →</div>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="viewTitle">每日打卡</h1>
+        <div class="crumb" id="viewCrumb">朱砂戒 · 修行道场</div>
+      </div>
+      <div class="flex">
+        <button class="contact-btn" onclick="openContact()" title="联系作者">✉</button>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="墨夜 / 宣纸">◐</button>
+        <div class="topclock">
+          <span class="stamp-greet"><span class="sc-seal" id="scSeal">卯</span><em id="schenGreet">守心精进 · 行稳致远</em></span>
+          <span class="crumb" id="topDate"></span>
+        </div>
+      </div>
+    </div>
+    <div class="quickstats" id="quick"></div>
+    <div class="quote-banner" id="quoteBanner"></div>
+    <section class="view" id="view"></section>
+  </main>
+</div>
+
+<!-- ============ 联系作者 ============ -->
+<div class="modal-mask" id="contactMask">
+  <div class="modal" style="max-width:440px">
+    <button class="modal-close" onclick="closeContact()">×</button>
+    <h3>联 系 作 者</h3>
+    <p class="sub">CONTACT · 同 修 共 进</p>
+    <div class="contact-body">
+      <div class="contact-row">
+        <span class="contact-ic">微</span>
+        <div class="contact-info">
+          <div class="contact-label">微信号</div>
+          <div class="contact-val">jihemanyouzhe</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="copyContact('jihemanyouzhe')">复制</button>
+      </div>
+      <div class="contact-row">
+        <span class="contact-ic">Q</span>
+        <div class="contact-info">
+          <div class="contact-label">QQ号</div>
+          <div class="contact-val">1312513825</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="copyContact('1312513825')">复制</button>
+      </div>
+      <div class="contact-row" style="flex-direction:column;align-items:stretch">
+        <div class="flex" style="align-items:center;gap:12px">
+          <span class="contact-ic">群</span>
+          <div class="contact-info">
+            <div class="contact-label">官方QQ群 · 朱砂戒</div>
+            <div class="contact-val">点击下方按钮加入群聊</div>
+          </div>
+        </div>
+        <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=E2hs1mCoZBfWJAPjaKJp6S7AED%2FkE0eBz7QFUl9yiWyX7EwJiNjVALsSmhPpeOBG&busi_data=eyJncm91cENvZGUiOiIxMTA1MDU1ODE5IiwidG9rZW4iOiJuS1Y3RmlEUXo1a0xnTWhDOHc2emNxZUplSmwrN2hHUXJ3R253RjdvbFNvVHZYZ0Y2RmkzMEN1N3FBTXB3VkdsIiwidWluIjoiMTMxMjUxMzgyNSJ9&data=MCw8eNidgGUA3grjugmJ0wcbQT-lCGPuG1NizLVM1FA2QvQiv_mpP0d0mZd4vQBt0eac5IWSPtkkyhgoqOawyg&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;width:100%;text-decoration:none">点 击 加 入 官 方 群 聊 →</a>
+      </div>
+    </div>
+    <p class="form-note" style="margin-top:14px">有建议或遇到问题，欢迎联系作者反馈。<br/>同修共进，不孤行。</p>
+  </div>
+</div>
+
+<!-- ============ SOS 欲念急救 ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b8302a"/><stop offset="100%" stop-color="#b8924a"/></linearGradient></defs></svg>
+<button class="fab" id="sosFab" onclick="openSOS()">急</button>
+<div class="sos-overlay" id="sosOverlay">
+  <div class="sos-inner">
+    <div class="sos-title">欲念急救</div>
+    <div class="sos-sub">守 心 为 要 · 此 刻 即 道 场</div>
+
+    <div class="sos-card">
+      <h4>一 · 即刻三事（先做再说）</h4>
+      <ul id="sosActs">
+        <li data-k="a">起身离床，离开当下环境</li>
+        <li data-k="b">冷水洗脸，或洗个冷水澡</li>
+        <li data-k="c">出门快走五分钟，或做二十个俯卧撑</li>
+      </ul>
+    </div>
+
+    <div class="sos-card">
+      <h4>二 · 五感安住（把自己拉回当下）</h4>
+      <ul>
+        <li>说出你眼前的 <b>五</b> 样东西</li>
+        <li>触摸身边 <b>四</b> 种材质的物品</li>
+        <li>倾听 <b>三</b> 种声音</li>
+        <li>闻 <b>二</b> 种气味</li>
+        <li>深呼吸 <b>一</b> 次，然后慢慢吐出</li>
+      </ul>
+    </div>
+
+    <div class="sos-card">
+      <h4>三 · 四七八呼吸（跟着圆圈走）</h4>
+      <div class="sos-breathe">
+        <div class="sos-circle" id="sosCircle"><span id="sosPhase">静</span></div>
+        <div style="font-size:12px;color:#c9a58f;margin-top:10px">吸四秒 · 屏七秒 · 呼八秒 · 循环往复</div>
+      </div>
+    </div>
+
+    <div class="sos-card">
+      <h4>四 · 廿分钟定律</h4>
+      <p style="font-size:13px;color:#c9a58f;line-height:1.8;margin-bottom:8px">欲念如潮，来去不过廿分钟。撑过此刻，便是晴天。</p>
+      <div class="sos-timer" id="sosTimer">20:00</div>
+      <div class="center">
+        <button class="btn btn-ghost" style="color:#f0c9b4;border-color:#8a5a48" id="sosTimerBtn" onclick="sosTimerToggle()">开 始 计 时</button>
+      </div>
+    </div>
+
+    <button class="sos-victory" onclick="sosVictory()">我 挺 过 来 了 · 记 一 次 拒 念</button>
+    <p style="text-align:center;margin-top:14px"><a style="color:#c9a58f;cursor:pointer;font-size:13px" onclick="closeSOS()">收起急救 · 返回道场</a></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   朱砂戒 · 前端（API 驱动）
+   ============================================================ */
+
+/* ---------- 静态内容 ---------- */
+const PROVINCES=["北京","上海","天津","重庆","河北","山西","辽宁","吉林","黑龙江","江苏","浙江","安徽","福建","江西","山东","河南","湖北","湖南","广东","海南","四川","贵州","云南","陕西","甘肃","青海","台湾","内蒙古","广西","西藏","宁夏","新疆","香港","澳门","海外"];
+
+const LEVELS=[
+  {min:0,name:"初心戒友",lv:"壹"},
+  {min:30,name:"守志行者",lv:"贰"},
+  {min:90,name:"清心居士",lv:"叁"},
+  {min:180,name:"明德行者",lv:"肆"},
+  {min:365,name:"真人境",lv:"伍"},
+  {min:730,name:"圣贤道",lv:"陆"}
+];
+
+const QUOTES=[
+  {t:"万恶淫为首，百行孝为先。",a:"《寿康宝鉴》"},
+  {t:"少之时，血气未定，戒之在色。",a:"《论语·季氏》"},
+  {t:"养心莫善于寡欲。",a:"《孟子》"},
+  {t:"精存自生，其外安荣。",a:"《管子》"},
+  {t:"淡泊以明志，宁静以致远。",a:"诸葛亮"},
+  {t:"嗜欲深者，其天机浅。",a:"《庄子》"},
+  {t:"守口如瓶，防意如城。",a:"憨山大师"},
+  {t:"一念清净，念念清净。",a:"《六祖坛经》"},
+  {t:"非礼勿视，非礼勿听。",a:"《论语》"},
+  {t:"祸福无门，惟人自召。",a:"《太上感应篇》"},
+  {t:"省察于将发，防杜于未然。",a:"朱熹"},
+  {t:"心不清则无以见道。",a:"《二程遗书》"},
+  {t:"吾日三省吾身。",a:"《论语》"},
+  {t:"胜人者有力，自胜者强。",a:"《道德经》"},
+  {t:"知人者智，自知者明。",a:"《道德经》"},
+  {t:"天行健，君子以自强不息。",a:"《周易》"},
+  {t:"千里之行，始于足下。",a:"《道德经》"},
+  {t:"业精于勤，荒于嬉。",a:"韩愈"},
+  {t:"人之为善，百善而不足。",a:"杨万里"},
+  {t:"静以修身，俭以养德。",a:"诸葛亮"},
+  {t:"不迁怒，不贰过。",a:"《论语》"},
+  {t:"过而能改，善莫大焉。",a:"《左传》"},
+  {t:"玉不琢，不成器。",a:"《礼记》"},
+  {t:"苦其心志，劳其筋骨。",a:"《孟子》"},
+  {t:"生于忧患，死于安乐。",a:"《孟子》"},
+  {t:"见贤思齐焉。",a:"《论语》"},
+  {t:"三人行，必有我师焉。",a:"《论语》"},
+  {t:"岁寒，然后知松柏之后凋也。",a:"《论语》"},
+  {t:"海纳百川，有容乃大；壁立千仞，无欲则刚。",a:"林则徐"},
+  {t:"五色令人目盲，五音令人耳聋。",a:"《道德经》"},
+  {t:"明日复明日，明日何其多。",a:"《明日歌》"},
+  {t:"莫等闲，白了少年头，空悲切。",a:"岳飞"},
+  {t:"书山有路勤为径，学海无涯苦作舟。",a:"韩愈"},
+  {t:"少壮不努力，老大徒伤悲。",a:"《长歌行》"},
+  {t:"天道酬勤，厚德载物。",a:"古语"},
+  {t:"非淡泊无以明志，非宁静无以致远。",a:"《诫子书》"}
+];
+
+/* ---------- 每日一签（功能2） ---------- */
+const SIGNS=[
+  {j:"上上",t:"守心若城，念起即觉。此日清明，诸事顺遂。",hint:"宜诵经 · 宜静坐 · 忌纵欲"},
+  {j:"上吉",t:"恬淡自适，神闲气定。今日所守，来日可期。",hint:"宜省身 · 宜读书 · 忌焦躁"},
+  {j:"中吉",t:"心尘偶起，拂之即净。守得一时，便是一时功。",hint:"宜运动 · 宜清淡 · 忌独处生邪"},
+  {j:"中平",t:"日升月落，皆是修行。平淡之中，自有真味。",hint:"宜劳作 · 宜助人 · 忌空想"},
+  {j:"中下",t:"欲念翻涌，正可炼心。难关过后，道心愈坚。",hint:"宜坚忍 · 宜倾诉 · 慎独为要"},
+  {j:"下吉",t:"一时失守，莫堕自怜。能起而复，方是真勇。",hint:"宜复盘 · 宜调整 · 忌自暴"}
+];
+function todaySign(){
+  const d=new Date();
+  const key=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  let seed=0;
+  for(let i=0;i<key.length;i++)seed=(seed*31+key.charCodeAt(i))>>>0;
+  return SIGNS[seed%SIGNS.length];
+}
+
+/* ---------- 心绪便签（功能4） ---------- */
+const MOODS=[
+  {k:"c",ic:"静",nm:"清静"},
+  {k:"m",ic:"定",nm:"安定"},
+  {k:"t",ic:"沉",nm:"沉闷"}];
+function saveMood(){
+  const v=document.querySelector('input[name="mood"]:checked');
+  const t=document.getElementById("moodNote");
+  const d=todayStr();
+  const data=JSON.parse(localStorage.getItem("zs_moods")||"{}");
+  data[d]={m:v?v.value:"",note:t?t.value.trim():"",ts:nowHm()};
+  localStorage.setItem("zs_moods",JSON.stringify(data));
+  renderMoodCard();
+  toast("心绪已记 · 自惜自照");
+}
+function getMoodToday(){
+  const d=todayStr();
+  const data=JSON.parse(localStorage.getItem("zs_moods")||"{}");
+  return data[d]||null;
+}
+function nowHm(){
+  const x=new Date();
+  return `${String(x.getHours()).padStart(2,"0")}:${String(x.getMinutes()).padStart(2,"0")}`;
+}
+function renderMoodCard(el){
+  const m=getMoodToday();
+  const mt=MOODS.find(x=>x.k===(m&&m.m));
+  el.innerHTML=`
+    <div class="card-title" style="font-size:16px"><span class="ic">♨</span>心绪便签 ${m?`<span class="tag tag-jade">已记 · ${m.ts}</span>`:""}</div>
+    <div class="mood-row">
+      ${MOODS.map(x=>`<label class="mood-opt ${m&&m.m===x.k?"on":""}">
+        <input type="radio" name="mood" value="${x.k}" onchange="saveMood()" ${m&&m.m===x.k?"checked":""}>
+        <span class="mood-ic">${x.ic}</span><span class="mood-nm">${x.nm}</span>
+      </label>`).join("")}
+    </div>
+    <div class="field" style="margin:10px 0 0">
+      <textarea id="moodNote" placeholder="${m&&m.note?m.note:"此刻心境，随手记一笔…"}">${m&&m.note?m.note:""}</textarea>
+    </div>
+    <div class="flex" style="margin-top:8px">
+      <button class="btn btn-ghost btn-sm" onclick="saveMood()">记 录 心 绪</button>
+      ${m?`<span class="mood-hist" title="近七日所记">${moodWeekHtml()}</span>`:""}
+    </div>`;
+}
+function moodWeekHtml(){
+  const out=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const data=JSON.parse(localStorage.getItem("zs_moods")||"{}");
+    const m=data[key];
+    const mt=m?MOODS.find(x=>x.k===m.m):null;
+    out.push(`<span class="mood-dot ${mt?"on-"+m.m:""}" title="${key}">${mt?mt.ic:"·"}</span>`);
+  }
+  return out.join("");
+}
+
+const CLASSICS={
+  shoukang:{name:"寿康宝鉴",lines:[
+    "色欲之害，大矣哉！伤身损寿，败德丧名，皆由斯起。",
+    "少年须力自克制，节欲保身，乃立命之基。",
+    "欲求寿康，先断邪淫。心地清明，神气自充。",
+    "一念之善，吉神随之；一念之恶，厉鬼随之。",
+    "守身如玉，勿以年少而轻掷；护心如城，勿以欲小而纵之。"
+  ]},
+  dizigui:{name:"弟子规",lines:[
+    "朝起早，夜眠迟，老易至，惜此时。",
+    "衣贵洁，不贵华，上循分，下称家。",
+    "步从容，立端正，揖深圆，拜恭敬。",
+    "事勿忙，忙多错，勿畏难，勿轻略。",
+    "斗闹场，绝勿近，邪僻事，绝勿问。"
+  ]},
+  ganying:{name:"太上感应篇",lines:[
+    "祸福无门，惟人自召；善恶之报，如影随形。",
+    "是道则进，非道则退。不履邪径，不欺暗室。",
+    "所谓善人，人皆敬之，天道佑之，福禄随之。",
+    "夫心起于善，善虽未为，而吉神已随之。",
+    "吉人语善、视善、行善，一日有三善，三年天必降之福。"
+  ]},
+  qingjing:{name:"清静经",lines:[
+    "人能常清静，天地悉皆归。",
+    "遣其欲而心自静，澄其心而神自清。",
+    "众生所以不得真道者，为有妄心。",
+    "妄心一起，惊其神；既惊其神，即着万物。",
+    "真常应物，真常得性；常应常静，常清静矣。"
+  ]},
+  liaofan:{name:"了凡四训",lines:[
+    "命由我作，福自己求。",
+    "从前种种，譬如昨日死；从后种种，譬如今日生。",
+    "改过者，第一要发耻心，第二要发畏心，第三须发勇心。",
+    "务要日日知非，日日改过；一日不知非，即一日安于自是。",
+    "善不积，不足以成名；恶不积，不足以灭身。"
+  ]}
+};
+
+const QUIZ_BANK=[
+  {q:"《论语》三戒中，少年应「戒之在」什么？",o:["色","斗","得","言"],a:0,e:"《论语·季氏》：少之时，血气未定，戒之在色。"},
+  {q:"「养心莫善于寡欲」出自哪部经典？",o:["《道德经》","《孟子》","《庄子》","《论语》"],a:1,e:"出自《孟子·尽心下》。"},
+  {q:"「嗜欲深者，其天机浅」出自？",o:["孔子","庄子","老子","墨子"],a:1,e:"语出《庄子·大宗师》。"},
+  {q:"「胜人者有力，自胜者强」出自？",o:["《周易》","《论语》","《道德经》","《管子》"],a:2,e:"出自《道德经》第三十三章。"},
+  {q:"「祸福无门，惟人自召」出自？",o:["《太上感应篇》","《清静经》","《了凡四训》","《弟子规》"],a:0,e:"《太上感应篇》开篇之语。"},
+  {q:"「静以修身，俭以养德」出自？",o:["诸葛亮《诫子书》","朱熹家训","《颜氏家训》","王阳明家书"],a:0,e:"诸葛亮《诫子书》。"},
+  {q:"「玉不琢，不成器」出自？",o:["《诗经》","《礼记》","《尚书》","《春秋》"],a:1,e:"出自《礼记·学记》。"},
+  {q:"「生于忧患，死于安乐」出自？",o:["《论语》","《孟子》","《荀子》","《韩非子》"],a:1,e:"出自《孟子·告子下》。"},
+  {q:"「无欲则刚」与哪位历史人物的名联相关？",o:["曾国藩","林则徐","左宗棠","王安石"],a:1,e:"林则徐：壁立千仞，无欲则刚。"},
+  {q:"「莫等闲，白了少年头」出自？",o:["岳飞《满江红》","陆游《示儿》","文天祥《正气歌》","辛弃疾《破阵子》"],a:0,e:"岳飞《满江红》。"},
+  {q:"「明日复明日，明日何其多」出自？",o:["《明日歌》","《长歌行》","《劝学》","《偶然作》"],a:0,e:"钱福《明日歌》。"},
+  {q:"戒色的根本目的是？",o:["压抑欲望","修身养性、恢复清明","顺应世俗","博取名声"],a:1,e:"戒色非压抑，乃立志守心、清明自现。"},
+  {q:"欲念强烈来袭时，最恰当的做法是？",o:["独自沉浸","立即起身转移注意力或求助","放任自流","故作无事"],a:1,e:"即刻改变环境与状态，配合呼吸定神。"},
+  {q:"「四四八法」呼吸中的「持」指什么？",o:["吸气","屏息守气","呼气","叹气"],a:1,e:"吸四秒、屏四秒、呼四秒、静四秒。"},
+  {q:"连续守戒最直接的身心收益是？",o:["精神清明、神气充盈","增加食欲","减少睡眠","激化情绪"],a:0,e:"守戒保精，神气自充，清明自现。"},
+  {q:"不慎破戒后，最应该做的是？",o:["自暴自弃","坦诚记录、重新起算","隐瞒不提","归咎他人"],a:1,e:"复修之道，贵在不自欺。"},
+  {q:"「非礼勿视」的下一句是？",o:["非礼勿听","非礼勿言","非礼勿动","非礼勿行"],a:0,e:"《论语》：非礼勿视，非礼勿听，非礼勿言，非礼勿动。"},
+  {q:"「吾日三省吾身」出自？",o:["《大学》","《中庸》","《论语》","《孟子》"],a:2,e:"《论语·学而》，曾子之言。"},
+  {q:"番茄专注法的核心是什么？",o:["长时间硬撑","专注与休息交替","边玩边学","熬夜突击"],a:1,e:"专注一段、休息一段，张弛有度。"},
+  {q:"「五色令人目盲」出自？",o:["《道德经》","《庄子》","《淮南子》","《抱朴子》"],a:0,e:"《道德经》第十二章。"},
+  {q:"「不迁怒，不贰过」是孔子称赞谁的？",o:["子路","颜回","子贡","曾参"],a:1,e:"《论语·雍也》孔子赞颜回。"},
+  {q:"「见贤思齐焉」的下一句是？",o:["见不贤而内自省也","三人行必有我师","择其善者而从之","其不善者而改之"],a:0,e:"《论语·里仁》。"},
+  {q:"「慎独」的意思是？",o:["谨慎交友","独处时依然严格自律","单独修行","少说话"],a:1,e:"《中庸》：君子慎其独也。"},
+  {q:"长期熬夜对戒色修行的影响是？",o:["没有影响","耗损精神、易生欲念","增长定力","替代运动"],a:1,e:"亥时前眠，养精蓄锐，欲念自减。"}
+];
+
+const DEEDS=[
+  {id:"help",name:"劝善助人",merit:8},{id:"resist",name:"拒一邪念",merit:6},
+  {id:"filial",name:"孝亲尊长",merit:6},{id:"volunteer",name:"志愿服务",merit:8},
+  {id:"exercise",name:"健身运动",merit:3},{id:"early",name:"早起早眠",merit:3},
+  {id:"vegetarian",name:"清淡饮食",merit:2},{id:"reflect",name:"静坐省过",merit:4},
+  {id:"kindness",name:"与人为善",merit:4},{id:"tidy",name:"洒扫居室",merit:2},
+  {id:"water",name:"饮水充足",merit:1},{id:"noboze",name:"亥时前眠",merit:3}
+];
+
+const TASKS=[
+  {id:"s",name:"晨起诵读经典一刻"},
+  {id:"j",name:"午间静坐省思三分钟"},
+  {id:"e",name:"运动强身三十分钟"},
+  {id:"n",name:"日行一善，劝善助人"},
+  {id:"z",name:"亥时（晚十一时）前入眠"}
+];
+
+const MED_PRESETS=[
+  {name:"自然数息",ph:[["吸",4],["呼",6],["静",2]]},
+  {name:"四四八法",ph:[["吸",4],["持",4],["呼",4],["静",4]]},
+  {name:"四七八法",ph:[["吸",4],["持",7],["呼",8]]}
+];
+const POMO_PRESETS=[{f:25,b:5,name:"标准 · 25/5"},{f:50,b:10,name:"深度 · 50/10"},{f:15,b:3,name:"轻浅 · 15/3"}];
+
+const MOOD_LIST=["清明","安宁","平淡","烦躁","低落"];
+
+const ACHIEVEMENTS=[
+  {id:"join",ic:"✦",name:"初心立戒",desc:"注册入道，立志守心",cond:m=>true},
+  {id:"first",ic:"✓",name:"首日打卡",desc:"完成第一次守戒打卡",cond:m=>m.days>=1},
+  {id:"d7",ic:"七",name:"七日不辍",desc:"连续守戒七日",cond:m=>m.streak>=7},
+  {id:"d21",ic:"廿",name:"廿一日立志",desc:"连续守戒廿一日",cond:m=>m.streak>=21},
+  {id:"d100",ic:"百",name:"百日筑基",desc:"连续守戒一百日",cond:m=>m.streak>=100},
+  {id:"d365",ic:"年",name:"周年庆功",desc:"连续守戒一整年",cond:m=>m.streak>=365},
+  {id:"m50",ic:"德",name:"功德小成",desc:"累计功德五十",cond:m=>m.merit>=50},
+  {id:"m500",ic:"圆",name:"功德圆融",desc:"累计功德五百",cond:m=>m.merit>=500},
+  {id:"quiz",ic:"题",name:"答题全对",desc:"闯关八题全对",cond:m=>m.quizBest>=8},
+  {id:"pomo10",ic:"专",name:"专注十轮",desc:"完成十轮专注番茄",cond:m=>m.pomoCount>=10},
+  {id:"med100",ic:"息",name:"息法百数",desc:"冥想呼吸累计百次",cond:m=>m.medBreaths>=100},
+  {id:"jr7",ic:"笔",name:"日记七篇",desc:"写下七篇修行日记",cond:m=>m.journalCount>=7},
+  {id:"resist5",ic:"守",name:"拒念五次",desc:"欲念来袭，守念五次",cond:m=>m.resistCount>=5},
+  {id:"reborn",ic:"立",name:"破而后立",desc:"破戒后重新守戒七日",cond:m=>m.relapseCount>=1&&m.streak>=7},
+  {id:"ch1",ic:"成",name:"守一挑战",desc:"圆满完成一次挑战",cond:m=>m.doneChallenges>=1},
+  {id:"ch3",ic:"炼",name:"百炼成钢",desc:"圆满完成三次挑战",cond:m=>m.doneChallenges>=3}
+];
+
+const NAV=[
+  {section:"每日修行"},
+  {id:"checkin",icon:"✓",name:"每日打卡"},
+  {id:"calendar",icon:"▦",name:"戒色日历"},
+  {id:"challenge",icon:"▲",name:"戒色挑战"},
+  {id:"leaderboard",icon:"◉",name:"红黑榜"},
+  {section:"修心练己"},
+  {id:"meditation",icon:"○",name:"冥想修心"},
+  {id:"willpower",icon:"⚡",name:"定力试炼"},
+  {id:"classics",icon:"❖",name:"经典诵读"},
+  {id:"quotes",icon:"✦",name:"励志锦囊"},
+  {id:"quiz",icon:"❓",name:"答题闯关"},
+  {section:"积德记录"},
+  {id:"merit",icon:"卍",name:"功德簿"},
+  {id:"journal",icon:"❀",name:"戒色日记"},
+  {id:"reflections",icon:"⟳",name:"破戒复盘"},
+  {id:"health",icon:"♡",name:"健康追踪"},
+  {section:"戒友共修"},
+  {id:"encourage",icon:"❤",name:"共勉墙"},
+  {id:"treehole",icon:"✿",name:"树洞倾诉"},
+  {id:"pomodoro",icon:"◐",name:"专注番茄"},
+  {section:"进阶"},
+  {id:"level",icon:"★",name:"等级修行"},
+  {id:"achievements",icon:"❂",name:"成就殿堂"},
+  {id:"settings",icon:"⚙",name:"修行设置"}
+];
+
+/* ---------- 状态 ---------- */
+const TOKEN_KEY="zs_token";
+let TOKEN=localStorage.getItem(TOKEN_KEY);
+let me=null;
+let curView="checkin";
+let achSeen=null;
+let lbFilter="red",lbSearch="";
+let classicsBook="shoukang";
+let quizQs=[],quizIdx=0,quizScore=0,quizAnswered=false;
+let lbData=null;
+
+/* ---------- 工具 ---------- */
+async function api(path,body,opts={}){
+  const method=opts.method||(body?"POST":"GET");
+  let res;
+  try{
+    res=await fetch("/api"+path,{
+      method,
+      headers:{"Content-Type":"application/json",...(TOKEN?{"X-Token":TOKEN}:{})},
+      body:body?JSON.stringify(body):undefined
+    });
+  }catch(e){
+    throw new Error("无法连接服务器，请确认后端已启动");
+  }
+  let data;
+  try{data=await res.json()}catch(e){throw new Error("服务器响应异常")}
+  if(!data.ok){
+    if(res.status===401&&path!=="/auth/login"){
+      TOKEN=null;localStorage.removeItem(TOKEN_KEY);me=null;showLanding();
+    }
+    throw new Error(data.error||"请求失败");
+  }
+  return data;
+}
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._tm);
+  t._tm=setTimeout(()=>t.classList.remove("show"),2600);
+}
+function escapeHtml(s){return String(s??"" ).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function todayStr(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000)}
+function fmtDateCN(iso){if(!iso)return"—";const[y,m,d]=iso.split("-");return `${y}年${+m}月${+d}日`}
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function setMe(u){me=u;checkAch();renderSidebar();renderQuick()}
+function getLevel(streak){let cur=LEVELS[0];for(const l of LEVELS)if(streak>=l.min)cur=l;return cur}
+function checkAch(){
+  if(!me)return;
+  const unlocked=ACHIEVEMENTS.filter(a=>a.cond(me)).map(a=>a.id);
+  if(achSeen===null){achSeen=new Set(unlocked);return}
+  unlocked.forEach(id=>{
+    if(!achSeen.has(id)){
+      achSeen.add(id);
+      const a=ACHIEVEMENTS.find(x=>x.id===id);
+      toast("成就解锁 · "+a.name+"「"+a.desc+"」");
+    }
+  });
+}
+
+/* ---------- 主题 ---------- */
+function applyTheme(){
+  const t=localStorage.getItem("zs_theme")||"paper";
+  document.documentElement.dataset.theme=t==="night"?"night":"paper";
+  document.getElementById("themeBtn").textContent=t==="night"?"☀":"◐";
+}
+function toggleTheme(){
+  const cur=localStorage.getItem("zs_theme")||"paper";
+  localStorage.setItem("zs_theme",cur==="night"?"paper":"night");
+  applyTheme();
+}
+
+/* ---------- 认证 ---------- */
+function openAuth(mode){renderAuth(mode);document.getElementById("authMask").classList.add("show")}
+function closeAuth(){document.getElementById("authMask").classList.remove("show")}
+function renderAuth(mode){
+  const title=document.getElementById("authTitle"),sub=document.getElementById("authSub"),
+    body=document.getElementById("authBody"),toggle=document.getElementById("authToggle"),
+    err=document.getElementById("authErr");
+  err.textContent="";
+  if(mode==="register"){
+    title.textContent="立 戒 入 道";
+    sub.textContent="SIGN UP · 守 戒 同 修";
+    body.innerHTML=`
+      <div class="field"><label>道号（昵称）</label><input id="r_name" placeholder="如：清心子" maxlength="12"></div>
+      <div class="field-row">
+        <div class="field"><label>所在地区</label>
+          <select id="r_region"><option value="">请选择…</option>${PROVINCES.map(p=>`<option>${p}</option>`).join("")}</select>
+        </div>
+        <div class="field"><label>立志戒期</label>
+          <select id="r_goal">
+            <option value="7">7 日 · 初心</option>
+            <option value="21" selected>21 日 · 立志</option>
+            <option value="100">100 日 · 进阶</option>
+            <option value="365">365 日 · 长修</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>登录口令</label><input id="r_pwd" type="password" placeholder="设置口令（不少于4位）"></div>
+      <div class="field"><label>戒色誓词（自勉）</label><textarea id="r_vow">愿守元精，不为色动；立志清明，日日精进。</textarea></div>
+      <button class="btn btn-primary" style="width:100%" onclick="doRegister()">立 誓 入 道</button>`;
+    toggle.innerHTML=`已有道号？ <a onclick="openAuth('login')">点此登录</a>`;
+  }else{
+    title.textContent="归 山 复 修";
+    sub.textContent="LOGIN · 同 修 归 来";
+    body.innerHTML=`
+      <div class="field"><label>道号</label><input id="l_name" placeholder="请输入道号"></div>
+      <div class="field"><label>口令</label><input id="l_pwd" type="password" placeholder="请输入口令"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="doLogin()">登 入 修 行</button>`;
+    toggle.innerHTML=`尚未入道？ <a onclick="openAuth('register')">点此立戒</a>`;
+  }
+}
+async function doRegister(){
+  const payload={
+    name:document.getElementById("r_name").value.trim(),
+    region:document.getElementById("r_region").value,
+    goal:+document.getElementById("r_goal").value,
+    pwd:document.getElementById("r_pwd").value,
+    vow:document.getElementById("r_vow").value.trim()
+  };
+  const err=document.getElementById("authErr");
+  if(!payload.name)return err.textContent="请填写道号";
+  if(!payload.region)return err.textContent="请选择所在地区";
+  if(payload.pwd.length<4)return err.textContent="口令不少于 4 位";
+  try{
+    const d=await api("/auth/register",payload);
+    afterAuth(d);
+  }catch(e){err.textContent=e.message}
+}
+async function doLogin(){
+  try{
+    const d=await api("/auth/login",{
+      name:document.getElementById("l_name").value.trim(),
+      pwd:document.getElementById("l_pwd").value
+    });
+    afterAuth(d);
+  }catch(e){document.getElementById("authErr").textContent=e.message}
+}
+function afterAuth(d){
+  TOKEN=d.token;
+  localStorage.setItem(TOKEN_KEY,TOKEN);
+  achSeen=null;
+  closeAuth();
+  enterApp(d.user);
+  toast(d.user.name+" · 欢迎归来同修");
+}
+async function logout(){
+  try{await api("/auth/logout",{})}catch(e){}
+  TOKEN=null;localStorage.removeItem(TOKEN_KEY);
+  me=null;achSeen=null;
+  showLanding();
+  toast("已退出 · 后会有期");
+}
+function showLanding(){
+  document.getElementById("shell").style.display="none";
+  document.getElementById("landing").style.display="flex";
+  document.getElementById("sosFab").classList.remove("show");
+}
+
+/* ---------- 应用骨架 ---------- */
+/* 时辰对照：23-1子 1-3丑 3-5寅 5-7卯 7-9辰 9-11巳 11-13午 13-15未 15-17申 17-19酉 19-21戌 21-23亥 */
+function getShichen(h){
+  if(h>=23||h<1)return"子";if(h<3)return"丑";if(h<5)return"寅";if(h<7)return"卯";
+  if(h<9)return"辰";if(h<11)return"巳";if(h<13)return"午";if(h<15)return"未";
+  if(h<17)return"申";if(h<19)return"酉";if(h<21)return"戌";return"亥";
+}
+/* 依时辰的古典问候 */
+function shichenGreet(sh){
+  const g={
+    子:"夜阑人静 · 养精蓄锐",丑:"更深露重 · 宁神定息",寅:"东方欲晓 · 静待天明",
+    卯:"晨光初照 · 神清气爽",辰:"时值早课 · 立心精进",巳:"日升中天 · 忙中守静",
+    午:"午时当歇 · 养心调息",未:"日中稍憩 · 蓄以待行",申:"日仄西斜 · 日课未辍",
+    酉:"薄暮掩卷 · 检点行止",戌:"华灯初上 · 省察一日",亥:"人定偃息 · 清心入睡"};
+  return g[sh]||"守心精进 · 行稳致远";
+}
+function updateTopDate(){
+  const d=new Date();
+  const sc=getShichen(d.getHours());
+  document.getElementById("topDate").textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")} · ${sc}时`;
+  const g=document.getElementById("schenGreet");
+  if(g)g.textContent=shichenGreet(sc);
+  const s=document.getElementById("scSeal");
+  if(s)s.textContent=sc;
+}
+let _dateTimer=null;
+function startTopDateTimer(){
+  updateTopDate();
+  if(_dateTimer) clearInterval(_dateTimer);
+  _dateTimer=setInterval(updateTopDate,30000);  // 每 30 秒刷新
+  document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden) updateTopDate();
+  });
+}
+function enterApp(user){
+  setMe(user);
+  document.getElementById("landing").style.display="none";
+  document.getElementById("shell").style.display="grid";
+  document.getElementById("sosFab").classList.add("show");
+  renderNav();
+  startTopDateTimer();
+  renderQuoteBanner();
+  navigate(curView);
+}
+function renderNav(){
+  document.getElementById("nav").innerHTML=NAV.map(n=>{
+    if(n.section)return `<div class="nav-section">— ${n.section} —</div>`;
+    return `<div class="nav-item ${n.id===curView?"active":""}" data-id="${n.id}" onclick="navigate('${n.id}')">
+      <span class="ic">${n.icon}</span><span>${n.name}</span></div>`;
+  }).join("");
+}
+function toggleSidebar(){
+  const sb=document.getElementById("sidebar");
+  const btn=document.getElementById("menuToggle");
+  const mask=document.getElementById("sideMask");
+  const open=sb.classList.toggle("open");
+  btn.classList.toggle("open",open);
+  mask.classList.toggle("show",open);
+  btn.textContent=open?"✕":"☰";
+}
+function closeSidebar(){
+  const sb=document.getElementById("sidebar");
+  if(!sb.classList.contains("open"))return;
+  sb.classList.remove("open");
+  document.getElementById("menuToggle").classList.remove("open");
+  document.getElementById("sideMask").classList.remove("show");
+  document.getElementById("menuToggle").textContent="☰";
+}
+function renderSidebar(){
+  if(!me)return;
+  document.getElementById("sideName").textContent=me.name;
+  const lv=getLevel(me.streak);
+  document.getElementById("sideInfo").innerHTML=`<span>${escapeHtml(me.region)}</span>·<span>守戒 ${me.streak} 日</span>·<span>${lv.name}</span>`;
+}
+function renderQuick(){
+  if(!me)return;
+  const lv=getLevel(me.streak);
+  document.getElementById("quick").innerHTML=`
+    <div class="qs">守戒 <b>${me.streak}</b> 日</div>
+    <div class="qs">功德 <b>${me.merit}</b></div>
+    <div class="qs">境界 <b style="font-size:13px">${lv.name}</b></div>
+    <div class="qs">地区 ${escapeHtml(me.region)}</div>
+    <div class="qs">拒念 <b>${me.resistCount}</b> 次</div>`;
+}
+const RENDERERS={
+  checkin:renderCheckin,calendar:renderCalendar,challenge:renderChallenge,leaderboard:renderLeaderboard,
+  meditation:renderMeditation,willpower:renderWillpower,merit:renderMerit,classics:renderClassics,
+  journal:renderJournal,reflections:renderReflections,quotes:renderQuotes,quiz:renderQuiz,
+  treehole:renderTreehole,encourage:renderEncourage,pomodoro:renderPomodoro,health:renderHealth,
+  level:renderLevel,achievements:renderAchievements,settings:renderSettings
+};
+async function navigate(id){
+  curView=id;
+  closeSidebar();
+  document.querySelectorAll(".nav-item").forEach(el=>el.classList.toggle("active",el.dataset.id===id));
+  const meta=NAV.find(n=>n.id===id);
+  document.getElementById("viewTitle").textContent=meta?meta.name:"";
+  const v=document.getElementById("view");
+  v.innerHTML=`<p class="empty">加 载 中 …</p>`;
+  v.classList.remove("fade-up");void v.offsetWidth;v.classList.add("fade-up");
+  try{await RENDERERS[id](v)}
+  catch(e){v.innerHTML=`<p class="empty">${escapeHtml(e.message)}</p>`}
+}
+
+/* ============================================================
+   1. 每日打卡（含今日功课 + 热力图）
+   ============================================================ */
+async function renderCheckin(v){
+  const d=await api("/me");
+  setMe(d.user);
+  const today=todayStr();
+  const doneToday=me.checkins.includes(today);
+  const streak=me.streak;
+  const progress=Math.min(100,Math.round(streak/me.goal*100));
+
+  // 12 周热力图
+  const set=new Set(me.checkins);
+  let heat='<div class="heat">';
+  const end=new Date();end.setHours(0,0,0,0);
+  const start=new Date(end);start.setDate(start.getDate()-83);
+  const startDow=start.getDay();
+  const cells=(startDow+84);
+  for(let i=0;i<cells;i++){
+    const dt=new Date(start);dt.setDate(start.getDate()+i-(i<startDow?0:0));
+    const cur=new Date(start);cur.setDate(start.getDate()+i-startDow);
+    const ds=todayStrOf(cur);
+    if(i<startDow){heat+="<i style='visibility:hidden'></i>";continue}
+    heat+=`<i class="${set.has(ds)?"on":""} ${ds===today?"today":""}" title="${ds}"></i>`;
+  }
+  heat+="</div>";
+
+  // 今日功课
+  const dayData=(me.daily&&me.daily[today])||{};
+  const tasksHtml=TASKS.map(t=>`
+    <div class="task-row ${dayData[t.id]?"done":""}" onclick="toggleTask('${t.id}')">
+      <span class="box">${dayData[t.id]?"✓":""}</span>
+      <span class="tname">${t.name}</span>
+      <span class="tmerit">功课</span>
+    </div>`).join("");
+  const doneCount=TASKS.filter(t=>dayData[t.id]).length;
+  const sign=todaySign();
+  const R=40,C=2*Math.PI*R;
+
+  v.innerHTML=`
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-title"><span class="ic">✓</span>今日修行</div>
+        <div class="card-sub">${escapeHtml(me.vow||"守心精进")}</div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 100 100" class="ring">
+            <circle class="ring-bg" cx="50" cy="50" r="${R}"/>
+            <circle class="ring-fg" cx="50" cy="50" r="${R}" style="stroke-dasharray:${C};stroke-dashoffset:${C*(1-progress/100)}"/>
+          </svg>
+          <div class="ring-label"><b>${progress}%</b><span>戒期 ${me.goal} 日</span></div>
+        </div>
+        ${doneToday
+          ?`<p class="center success-line">今日已守 · 连续 ${streak} 日</p>`
+          :`<p class="center muted">已连续 ${streak} 日 · 待你立心</p>
+            <div class="center" style="margin-top:10px"><button class="btn btn-primary" onclick="doCheckin()">立 志 打 卡</button></div>`}
+        <div class="spacer"></div>
+        <div class="daily-sign">
+          <div class="sign-badge">今日签 · <b>${sign.j}</b></div>
+          <div class="sign-txt">${sign.t}</div>
+          <div class="sign-hint">${sign.hint}</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="card-title" style="font-size:15px"><span class="ic">✎</span>今日功课 <span class="tag tag-ink">${doneCount}/${TASKS.length}</span>${dayData._bonus?'<span class="tag tag-jade">已圆满 +8</span>':""}</div>
+        ${tasksHtml}
+        <p class="muted" style="margin-top:6px">五课俱全，功德加八。</p>
+      </div>
+      <div class="card">
+        <div id="moodCard"></div>
+        <div class="spacer"></div>
+        <div class="card-title"><span class="ic">▦</span>十二周心历热力图</div>
+        <div class="card-sub">朱色为已守之日 · 金框为今日</div>
+        ${heat}
+        <div class="spacer"></div>
+        <div class="stat-row">
+          <div class="stat"><div class="v">${streak}</div><div class="l">连续日</div></div>
+          <div class="stat"><div class="v">${me.days}</div><div class="l">累计日</div></div>
+          <div class="stat"><div class="v">${me.relapseCount}</div><div class="l">破戒次</div></div>
+          <div class="stat"><div class="v">${me.resistCount}</div><div class="l">拒念次</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">!</span>破 戒 复 修</div>
+      <div class="card-sub">若不慎破戒，请坦诚记录 — 复修之道，贵在不自欺。</div>
+      <div class="flex">
+        <button class="btn btn-ghost btn-sm" onclick="doRelapse()">坦 诚 破 戒 · 重 新 起 算</button>
+        <span class="muted">破戒非终，能起复修，便是道心。</span>
+      </div>
+    </div>`;
+  const mc=document.getElementById("moodCard");
+  if(mc)renderMoodCard(mc);
+}
+function todayStrOf(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function celebrate(streak){
+  const el=document.createElement("div");
+  el.className="celebrate";
+  el.innerHTML=`<div class="stamp-seal">今日已守<small>守戒第 ${streak} 日</small></div>`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2000);
+}
+async function doCheckin(){
+  try{
+    const d=await api("/checkin",{});
+    setMe(d.user);
+    if(d.changed){celebrate(d.streak);toast(`打卡成功 · 守戒第 ${d.streak} 日 · 功德 +5`)}
+    else toast("今日已守 · 无需重复打卡");
+    renderCheckin(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function doRelapse(){
+  if(!confirm("确定坦诚记录破戒？连续日将归零，但历史记录保留。"))return;
+  try{
+    const d=await api("/relapse",{});
+    setMe(d.user);
+    toast("已重置 · 复修之道，贵在不自欺");
+    renderCheckin(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function toggleTask(task){
+  try{
+    const d=await api("/daily",{task});
+    setMe(d.user);
+    if(d.bonus)toast("今日功课圆满 · 功德 +8");
+    renderCheckin(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   2. 戒色挑战
+   ============================================================ */
+async function renderChallenge(v){
+  const d=await api("/me");setMe(d.user);
+  const active=me.challenges.find(c=>c.status==="active");
+  const presets=[7,21,30,100,365];
+  v.innerHTML=`
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-title"><span class="ic">▲</span>当前挑战</div>
+        ${active?(()=>{
+          const passed=Math.min(active.days,daysBetween(active.start,todayStr())+1);
+          const pct=Math.min(100,Math.round(passed/active.days*100));
+          return `
+            <div class="flex" style="justify-content:space-between">
+              <span class="tag tag-jade">进行中</span><span class="muted">起 ${active.start}</span></div>
+            <div class="spacer"></div>
+            <p class="big-num">${active.days} <small>日挑战</small></p>
+            <p class="muted">已过 ${passed} 日 · 剩 ${Math.max(0,active.days-passed)} 日</p>
+            <div class="progress"><div style="width:${pct}%"></div></div>
+            <div class="muted right">${pct}%</div>
+            ${passed>=active.days
+              ?`<button class="btn btn-jade" style="margin-top:14px;width:100%" onclick="finishChallenge()">圆 满 结 修（功德+20）</button>`
+              :`<button class="btn btn-ghost btn-sm" style="margin-top:14px" onclick="abandonChallenge()">放 弃 挑 战</button>`}`;
+        })():`<p class="muted">尚未开启挑战。<br/>择一戒期，立心起修。</p>`}
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="ic">✦</span>择期起修</div>
+        <div class="card-sub">渐进守戒，铸就定力</div>
+        <div class="flex">${presets.map(p=>`<button class="tab" onclick="startChallenge(${p})">${p} 日</button>`).join("")}</div>
+        <div class="spacer"></div>
+        <p class="muted">建议由 7 日起，渐次至 100 日、365 日。<br/>每完成一阶，功德 +20。</p>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">❀</span>往 期 挑 战</div>
+      ${me.challenges.filter(c=>c.status!=="active").length===0?`<p class="empty">尚无往期挑战记录</p>`
+        :me.challenges.filter(c=>c.status!=="active").map(c=>`
+          <div class="entry"><div class="meta">${c.start} → ${c.end||"未竟"} · ${c.days} 日</div>
+          <div class="txt">${c.status==="done"?'<span class="tag tag-jade">圆满</span> 已完成此阶挑战':'<span class="tag">弃修</span> 中途放弃，愿君再起'}</div></div>`).join("")}
+    </div>`;
+}
+async function startChallenge(days){
+  try{const d=await api("/challenge/start",{days});setMe(d.user);toast(`已开启 ${days} 日挑战 · 立心起修`);renderChallenge(document.getElementById("view"))}
+  catch(e){toast(e.message)}
+}
+async function finishChallenge(){
+  try{const d=await api("/challenge/finish",{});setMe(d.user);toast("挑战圆满 · 功德 +20");renderChallenge(document.getElementById("view"))}
+  catch(e){toast(e.message)}
+}
+async function abandonChallenge(){
+  if(!confirm("确定放弃当前挑战？"))return;
+  try{const d=await api("/challenge/abandon",{});setMe(d.user);toast("已放弃 · 愿君再起");renderChallenge(document.getElementById("view"))}
+  catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   3. 红黑榜（服务端聚合 · 匿名 · 前二十）
+   ============================================================ */
+async function renderLeaderboard(v){
+  lbData=await api("/leaderboard");
+  v.innerHTML=`
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-title"><span class="ic">◉</span>戒 色 红 黑 榜</div>
+      <div class="card-sub">以地区为鉴 · 匿名统计 · 红榜彰勤，黑榜警惰</div>
+      <div class="flex" style="justify-content:space-between;margin-bottom:12px">
+        <div class="tab-row" style="margin:0" id="lbTabs">
+          <button class="tab ${lbFilter==="red"?"active":""}" onclick="lbTab('red',this)">红 榜 · 守戒精进</button>
+          <button class="tab ${lbFilter==="black"?"active":""}" onclick="lbTab('black',this)">黑 榜 · 破戒警省</button>
+        </div>
+        <input class="search-input" placeholder="搜索地区…" value="${escapeHtml(lbSearch)}" oninput="lbSearch=this.value;lbRender()">
+      </div>
+      <div id="lbMy"></div>
+      <div id="lbPodium"></div>
+      <div id="lbBody"></div>
+      <div class="spacer"></div>
+      <div class="flex" style="justify-content:space-between">
+        <span class="muted">数据存于服务器 · 只显示地区聚合，不显示任何道号</span>
+        <div class="flex">
+          <button class="btn btn-ghost btn-sm" onclick="seedDemo()">注入演示数据</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearDemo()">清除演示数据</button>
+        </div>
+      </div>
+    </div>`;
+  lbRender();
+}
+function lbTab(tab,el){
+  lbFilter=tab;
+  document.querySelectorAll("#lbTabs .tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  lbRender();
+}
+function lbRender(){
+  if(!lbData)return;
+  const isRed=lbFilter==="red";
+  let list=(isRed?lbData.red:lbData.black).filter(r=>!lbSearch||r.region.includes(lbSearch));
+  const total=list.length;
+  list=list.slice(0,20);
+  const myEl=document.getElementById("lbMy");
+  const podEl=document.getElementById("lbPodium");
+  const bodyEl=document.getElementById("lbBody");
+  // 吾乡卡片
+  if(myEl){
+    const full=isRed?lbData.red:lbData.black;
+    const idx=full.findIndex(r=>r.region===lbData.myRegion);
+    const mine=full[idx];
+    myEl.innerHTML=mine?`
+      <div class="my-region-card">
+        <span class="mr-name">${escapeHtml(mine.region)}</span>
+        <span class="tag tag-gold">吾乡</span>
+        <span class="mr-item">${isRed?"红榜":"黑榜"}第 <b>${idx+1}</b> 位</span>
+        <span class="mr-item">同修 <b>${mine.count}</b> 人</span>
+        <span class="mr-item">${isRed?`当前守戒 <b>${mine.streak}</b> 日`:`累计破戒 <b>${mine.relapse}</b> 次`}</span>
+        <span class="mr-item">功德 <b>${mine.merit}</b></span>
+      </div>`:"";
+  }
+  // 领奖台
+  if(podEl){
+    if(isRed&&list.length>=3){
+      const order=[list[1],list[0],list[2]];
+      podEl.innerHTML=`<div class="podium">${order.map((r,i)=>{
+        const rank=r===list[0]?1:r===list[1]?2:3;
+        return `<div class="pod pod-${rank}">
+          <div class="p-rank">${["","壹","贰","叁"][rank]}</div>
+          <div class="p-region">${escapeHtml(r.region)}</div>
+          <div class="p-num">守戒 ${r.streak} 日 · ${r.count} 人</div>
+        </div>`}).join("")}</div>`;
+    }else podEl.innerHTML="";
+  }
+  if(bodyEl){
+    if(list.length===0){
+      bodyEl.innerHTML=`<p class="empty">${lbSearch?"未找到该地区":(isRed?"暂无红榜数据 · 快打卡守戒，为家乡争光":"暂无黑榜数据 · 甚善，望继续保持")}</p>`;
+      return;
+    }
+    const rows=list.map((r,i)=>{
+      const rankCls=i<3?`rank-${i+1}`:"rank-n";
+      const mine=r.region===lbData.myRegion?' <span class="tag tag-gold">吾乡</span>':"";
+      return `<tr class="lb-row ${isRed?"red":"black"}">
+        <td><span class="rank ${rankCls}">${i+1}</span></td>
+        <td style="font-family:'ZCOOL XiaoWei',serif;letter-spacing:.08em">${escapeHtml(r.region)}${mine}</td>
+        <td>${r.count} 人</td>
+        ${isRed
+          ?`<td><span class="dot dot-red"></span>${r.streak} 日</td><td>最高 ${r.max} 日</td><td>累计 ${r.days} 日</td><td>${r.merit} 功德</td>`
+          :`<td><span class="dot dot-black"></span>${r.relapse} 次</td><td>人均 ${(r.relapse/r.count).toFixed(1)} 次</td><td>累计 ${r.days} 日</td><td>${r.merit} 功德</td>`}
+      </tr>`;
+    }).join("");
+    bodyEl.innerHTML=`
+      ${total>20?`<p class="muted right" style="margin-bottom:6px">共 ${total} 个地区 · 显示前 20</p>`:""}
+      <table class="lb-table">
+        <thead><tr><th>排名</th><th>地区</th><th>同修</th>
+        ${isRed?"<th>当前守戒</th><th>最高连续</th><th>累计守戒</th><th>功德</th>":"<th>累计破戒</th><th>人均破戒</th><th>累计守戒</th><th>功德</th>"}
+        </tr></thead><tbody>${rows}</tbody></table>`;
+  }
+}
+async function seedDemo(){
+  try{const d=await api("/demo/seed",{});toast(`已注入 ${d.added} 位演示同修`);lbData=await api("/leaderboard");lbRender()}
+  catch(e){toast(e.message)}
+}
+async function clearDemo(){
+  try{const d=await api("/demo/clear",{});toast(`已清除 ${d.removed} 位演示同修`);lbData=await api("/leaderboard");lbRender()}
+  catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   4. 冥想修心（预设 · 可暂停）
+   ============================================================ */
+let med={timer:null,pi:0,left:0,running:false,cycles:0,preset:0};
+function renderMeditation(v){
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title" style="justify-content:center"><span class="ic">○</span>调 息 修 心</div>
+      <div class="card-sub center">择一息法 · 每呼吸十次，功德 +3</div>
+      <div class="tab-row" style="justify-content:center">
+        ${MED_PRESETS.map((p,i)=>`<button class="tab ${i===med.preset?"active":""}" onclick="medSetPreset(${i})">${p.name}</button>`).join("")}
+      </div>
+      <div class="meditate-stage">
+        <div class="zen-circle" id="zenCircle">
+          <div><div class="zen-text" id="zenText">未 起</div>
+          <div class="zen-count" id="zenCount">点击下方开始</div></div>
+        </div>
+        <div class="pomo-controls" style="margin-top:26px">
+          <button class="btn btn-primary" id="medBtn" onclick="medToggle()">开 始 修 息</button>
+          <button class="btn btn-ghost" onclick="medReset()">重 置</button>
+        </div>
+        <p class="muted" style="margin-top:12px">本轮已呼吸 <b id="medCycles">${med.cycles}</b> 次 · 累计 ${me.medBreaths} 次</p>
+      </div>
+    </div>`;
+  medPaint();
+}
+function medSetPreset(i){medStop();med={...med,pi:0,left:0,cycles:0,preset:i,running:false};renderMeditation(document.getElementById("view"))}
+function medPhases(){return MED_PRESETS[med.preset].ph}
+function medPaint(){
+  const c=document.getElementById("zenCircle"),t=document.getElementById("zenText"),n=document.getElementById("zenCount");
+  if(!c)return;
+  const ph=medPhases()[med.pi];
+  if(!med.running&&!med.left){t.textContent="未 起";n.textContent="点击下方开始";c.className="zen-circle";return}
+  t.textContent=ph[0];
+  n.textContent=ph[1]+" 秒";
+  c.className="zen-circle "+(ph[0]==="吸"?"breathe-in":ph[0]==="呼"?"breathe-out":"");
+}
+function medToggle(){
+  const btn=document.getElementById("medBtn");
+  if(med.running){
+    med.running=false;clearInterval(med.timer);btn.textContent="继 续";
+  }else{
+    med.running=true;btn.textContent="暂 停";
+    if(!med.left){med.pi=0;med.left=medPhases()[0][1];med.cycles=0}
+    medPaint();
+    med.timer=setInterval(()=>{
+      if(!med.running)return;
+      med.left--;
+      if(med.left<=0){
+        med.pi=(med.pi+1)%medPhases().length;
+        if(med.pi===0){
+          med.cycles++;
+          const cEl=document.getElementById("medCycles");
+          if(cEl)cEl.textContent=med.cycles;
+          if(med.cycles%10===0){
+            api("/meditation",{breaths:10}).then(d=>{setMe(d.user);if(d.gain>0)toast("呼吸十次 · 功德 +3")}).catch(()=>{});
+          }
+        }
+        med.left=medPhases()[med.pi][1];
+      }
+      medPaint();
+    },1000);
+  }
+}
+function medStop(){med.running=false;clearInterval(med.timer)}
+function medReset(){medStop();med={...med,pi:0,left:0,cycles:0,running:false};renderMeditation(document.getElementById("view"))}
+
+/* ============================================================
+   5. 功德簿
+   ============================================================ */
+function renderMerit(v){
+  v.innerHTML=`
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-title"><span class="ic">卍</span>功 德 总 数</div>
+        <p class="big-num">${me.merit} <small>功德</small></p>
+        <div class="muted">行善积德，心向光明。</div>
+        <div class="stat-row">
+          <div class="stat"><div class="v">${me.days}</div><div class="l">打卡数</div></div>
+          <div class="stat"><div class="v">${me.doneChallenges}</div><div class="l">完成挑战</div></div>
+          <div class="stat"><div class="v">${me.pomoCount}</div><div class="l">专注次数</div></div>
+          <div class="stat"><div class="v">${me.resistCount}</div><div class="l">拒念次数</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="ic">✚</span>补 录 善 行</div>
+        <div class="card-sub">此处仅录日常善行 · 打卡/冥想/诵读等功德由各模块自动记录</div>
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:8px">
+          ${DEEDS.map(d=>`<button class="tab" style="text-align:left" onclick="addMerit('${d.id}')">${d.name} +${d.merit}</button>`).join("")}
+        </div>
+      </div>
+    </div>`;
+}
+async function addMerit(id){
+  try{const d=await api("/merit",{id});setMe(d.user);toast(`已录善行：${d.name} · 功德 +${d.merit}`);renderMerit(document.getElementById("view"))}
+  catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   6. 经典诵读
+   ============================================================ */
+function renderClassics(v){
+  const book=CLASSICS[classicsBook];
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">❖</span>经 典 诵 读</div>
+      <div class="card-sub">先贤智慧，润心启明</div>
+      <div class="tab-row">
+        ${Object.entries(CLASSICS).map(([k,b])=>`<button class="tab ${k===classicsBook?"active":""}" onclick="classicsBook='${k}';renderClassics(document.getElementById('view'))">${b.name}</button>`).join("")}
+      </div>
+      <div class="scroll-y">
+        ${book.lines.map((line,i)=>`
+          <div class="entry"><div class="meta">第 ${i+1} 句 · ${book.name}</div>
+          <div class="txt">${line}</div></div>`).join("")}
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px" onclick="reciteClassic()">诵 读《${book.name}》一 卷 · 功 德 +${book===CLASSICS.qingjing||book===CLASSICS.liaofan?6:5}</button>
+    </div>`;
+}
+async function reciteClassic(){
+  try{
+    const d=await api("/classic",{book:classicsBook});
+    setMe(d.user);
+    toast(`已诵读《${d.title}》一卷 · 功德 +${d.merit}`);
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   7. 戒色日记（心境标签）
+   ============================================================ */
+let journalMood="平淡";
+async function renderJournal(v){
+  const d=await api("/journal");
+  const list=d.list;
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">❀</span>今 日 心 念</div>
+      <div class="card-sub">如实记录，省察自心 · 写一篇功德 +3</div>
+      <div class="field"><label>今日心境</label>
+        <div class="flex" style="gap:6px">
+          ${MOOD_LIST.map(m=>`<button class="tab ${m===journalMood?"active":""}" style="padding:5px 14px" onclick="journalMood='${m}';renderJournal(document.getElementById('view'));setTimeout(()=>{const t=document.getElementById('jText');if(t&&t.dataset.focus){t.focus()}},0)">${m}</button>`).join("")}
+        </div>
+      </div>
+      <div class="field"><textarea id="jText" data-focus="${journalMood!==undefined?1:1}" placeholder="今日心境如何？有何省察、有何精进…"></textarea></div>
+      <div class="flex" style="justify-content:space-between">
+        <span class="muted">心所安处，便是道场</span>
+        <button class="btn btn-primary btn-sm" onclick="addJournal()">记 录 心 念</button>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">❀</span>往 昔 日 记 · 共 ${list.length} 篇</div>
+      ${list.length===0?`<p class="empty">尚无日记 · 愿君提笔</p>`
+        :list.map(j=>`
+          <div class="entry">
+            <div class="meta">${j.date}<span class="tag tag-ink">${escapeHtml(j.mood||"平淡")}</span></div>
+            <div class="txt">${escapeHtml(j.text)}</div>
+            <div class="entry-actions"><a onclick="delJournal(${j.id})">删除</a></div>
+          </div>`).join("")}
+    </div>`;
+}
+async function addJournal(){
+  const t=document.getElementById("jText").value.trim();
+  if(!t)return toast("请先写下心念");
+  try{
+    const d=await api("/journal",{text:t,mood:journalMood});
+    setMe(d.user);
+    toast("已记录心念 · 功德 +3");
+    renderJournal(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function delJournal(id){
+  if(!confirm("确定删除此篇日记？"))return;
+  try{await api("/journal/delete",{id});renderJournal(document.getElementById("view"))}
+  catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   8. 励志锦囊
+   ============================================================ */
+
+/* ---------- 名言横幅（首页轮播） ---------- */
+function renderQuoteBanner(){
+  const el=document.getElementById("quoteBanner");
+  if(!el)return;
+  if(el.dataset.init)return;      // 仅初始化一次，避免重复绑定
+  el.dataset.init="1";
+  el.innerHTML=`
+    <div class="qb-seal">言</div>
+    <div class="qb-body">
+      <div class="qb-text" id="qbText"></div>
+      <div class="qb-author" id="qbAuthor"></div>
+    </div>
+    <div class="qb-nav" id="qbNav"></div>
+    <button class="qb-arrow" onclick="qbPrev()">‹</button>
+    <button class="qb-arrow" onclick="qbNext()">›</button>`;
+  qbIdx=Math.floor(Math.random()*QUOTES.length);
+  qbShow();
+  if(qbTimer)clearInterval(qbTimer);
+  qbTimer=setInterval(()=>qbStep(1),8000);   // 每 8 秒自动轮播
+}
+let qbIdx=0,qbTimer=null;
+function qbShow(){
+  const t=document.getElementById("qbText"),a=document.getElementById("qbAuthor");
+  if(!t)return;
+  const q=QUOTES[qbIdx];
+  t.style.opacity=0;
+  setTimeout(()=>{
+    t.textContent=q.t;a.textContent="— "+q.a;
+    t.style.opacity=1;
+  },150);
+  const nav=document.getElementById("qbNav");
+  if(nav){
+    nav.innerHTML=QUOTES.map((_,i)=>
+      `<span class="qb-dot ${i===qbIdx?"on":""}" onclick="qbGo(${i})"></span>`).join("");
+  }
+}
+function qbStep(dir){
+  qbIdx=(qbIdx+dir+QUOTES.length)%QUOTES.length;
+  qbShow();
+}
+function qbPrev(){qbStep(-1)}
+function qbNext(){qbStep(1)}
+function qbGo(i){qbIdx=i;qbShow()}
+
+function renderQuotes(v){
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">✦</span>励 志 锦 囊</div>
+      <div class="card-sub">先贤箴言 · 共三十六则</div>
+      <div class="quote-card" id="qCard">
+        <span class="seal-corner">朱砂戒</span>
+        <div class="quote-text" id="qText">${QUOTES[0].t}</div>
+        <div class="quote-author" id="qAuthor">— ${QUOTES[0].a}</div>
+      </div>
+      <div class="center">
+        <button class="btn btn-primary btn-sm" onclick="nextQuote()">再 取 一 锦 囊</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyQuote()">抄 录 此 句</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="grid grid-3">
+        ${QUOTES.map(q=>`<div class="card" style="padding:14px">
+          <div style="font-family:'Ma Shan Zheng',cursive;font-size:17px;line-height:1.6">${q.t}</div>
+          <div class="muted right" style="margin-top:8px">— ${q.a}</div>
+        </div>`).join("")}
+      </div>
+    </div>`;
+}
+let quoteIdx=0;
+function nextQuote(){
+  const old=quoteIdx;
+  while(quoteIdx===old&&QUOTES.length>1)quoteIdx=Math.floor(Math.random()*QUOTES.length);
+  const c=document.getElementById("qCard");
+  c.style.opacity=0;
+  setTimeout(()=>{
+    document.getElementById("qText").textContent=QUOTES[quoteIdx].t;
+    document.getElementById("qAuthor").textContent="— "+QUOTES[quoteIdx].a;
+    c.style.opacity=1;
+  },250);
+}
+function copyQuote(){
+  const t=document.getElementById("qText").textContent+"\n"+document.getElementById("qAuthor").textContent;
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(t).then(()=>toast("已抄录至剪贴板")).catch(()=>fallbackCopy(t));
+  }else fallbackCopy(t);
+}
+function fallbackCopy(t){
+  const ta=document.createElement("textarea");
+  ta.value=t;ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand("copy");toast("已抄录至剪贴板")}
+  catch(e){toast("抄录失败 · 请手动复制")}
+  ta.remove();
+}
+
+/* ============================================================
+   9. 答题闯关（题库 24 随机 8）
+   ============================================================ */
+function renderQuiz(v){
+  quizQs=shuffle(QUIZ_BANK).slice(0,8);
+  quizIdx=0;quizScore=0;quizAnswered=false;
+  quizShow(v);
+}
+function quizShow(v){
+  if(quizIdx>=quizQs.length){
+    const isNew=quizScore>me.quizBest;
+    v.innerHTML=`
+      <div class="card center">
+        <div class="card-title" style="justify-content:center"><span class="ic">★</span>闯 关 圆 满</div>
+        <p class="big-num">${quizScore} / ${quizQs.length}</p>
+        <p class="muted">${quizScore>=6?"通晓先贤 · 道心清明":quizScore>=4?"颇有悟性 · 再接再厉":"尚需勤学 · 多读经典"}</p>
+        ${isNew?'<p class="success-line">个人新纪录！</p>':`<p class="muted">个人最佳：${me.quizBest} 分</p>`}
+        <div class="spacer"></div>
+        <button class="btn btn-primary" onclick="renderQuiz(document.getElementById('view'))">再 战 一 局</button>
+      </div>`;
+    api("/quiz",{score:quizScore,total:quizQs.length}).then(d=>{
+      setMe(d.user);
+      toast(`战绩已录 · 功德 +${d.gain}`);
+    }).catch(()=>{});
+    return;
+  }
+  const q=quizQs[quizIdx];
+  v.innerHTML=`
+    <div class="card">
+      <div class="flex" style="justify-content:space-between">
+        <span class="tag">第 ${quizIdx+1} / ${quizQs.length} 关</span>
+        <span class="muted">当前 ${quizScore} 分</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="quiz-q">${q.q}</div>
+      <div id="quizOpts">
+        ${q.o.map((o,i)=>`<button class="quiz-opt" onclick="quizAnswer(${i})">${["甲","乙","丙","丁"][i]}　${o}</button>`).join("")}
+      </div>
+      <div id="quizExplain" style="display:none">
+        <p class="muted" style="line-height:1.8;background:var(--heat-off);padding:12px;border-radius:4px">${q.e}</p>
+        <div class="center" style="margin-top:12px">
+          <button class="btn btn-primary btn-sm" onclick="quizNext()">下 一 关 →</button>
+        </div>
+      </div>
+    </div>`;
+}
+function quizAnswer(i){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=quizQs[quizIdx];
+  document.querySelectorAll(".quiz-opt").forEach((o,idx)=>{
+    o.disabled=true;
+    if(idx===q.a)o.classList.add("correct");
+    if(idx===i&&i!==q.a)o.classList.add("wrong");
+  });
+  if(i===q.a){quizScore++;toast("答对了 · 道心清明")}
+  else toast("尚需勤学");
+  document.getElementById("quizExplain").style.display="block";
+}
+function quizNext(){quizIdx++;quizAnswered=false;quizShow(document.getElementById("view"))}
+
+/* ============================================================
+   10. 树洞倾诉（服务器共享）
+   ============================================================ */
+let thSort="new",encSort="new";
+async function renderTreehole(v){
+  const d=await api("/treehole");
+  const list=[...d.list].sort((a,b)=>thSort==="hot"?(b.hearts||0)-(a.hearts||0):(b.date||"").localeCompare(a.date||""));
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">✿</span>树 洞 倾 诉</div>
+      <div class="card-sub">匿名倾诉 · 全站同修共勉 · 倾诉一篇功德 +2</div>
+      <div class="field"><textarea id="thText" placeholder="把心事说给树洞听…"></textarea></div>
+      <div class="flex" style="justify-content:space-between">
+        <span class="muted">倾诉一字 · 心轻一分</span>
+        <button class="btn btn-primary btn-sm" onclick="addTreehole()">投 入 树 洞</button>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">❀</span>同 修 心 声 · 共 ${d.list.length} 条
+        <span class="sort-tabs">
+          <span class="sort-tab ${thSort==="new"?"on":""}" onclick="setThSort('new')">最新</span>
+          <span class="sort-tab ${thSort==="hot"?"on":""}" onclick="setThSort('hot')">最热</span>
+        </span>
+      </div>
+      ${list.length===0?`<p class="empty">树洞静默 · 待你倾诉</p>`
+        :list.map(h=>`
+          <div class="tree-hole">
+            <div class="anon">来自 ${escapeHtml(h.region||"远方")} 的同修 · ${h.date}</div>
+            <div class="msg">${escapeHtml(h.text)}</div>
+            <div class="hearts ${h.liked?'liked':''}" ${h.liked?'':'onclick="heartTreehole('+h.id+',this)"'}>${h.liked?'已 赞 · ':""}❤ ${h.hearts||0} · 同心共勉</div>
+          </div>`).join("")}
+    </div>`;
+}
+function setThSort(s){thSort=s;renderTreehole(document.getElementById("view"))}
+async function addTreehole(){
+  const t=document.getElementById("thText").value.trim();
+  if(!t)return toast("请先写下心声");
+  try{
+    const d=await api("/treehole",{text:t});
+    setMe(d.user);
+    toast("已投入树洞 · 功德 +2");
+    renderTreehole(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function heartTreehole(id,el){
+  if(el.classList.contains("liked"))return;
+  try{
+    const d=await api("/treehole/heart",{id});
+    el.classList.add("liked");
+    el.innerHTML=`已 赞 · ❤ ${d.hearts} · 同心共勉`;
+    el.onclick=null;
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   11. 专注番茄（预设）
+   ============================================================ */
+let pomo={timer:null,left:25*60,running:false,mode:"focus",preset:0};
+function renderPomodoro(v){
+  const p=POMO_PRESETS[pomo.preset];
+  v.innerHTML=`
+    <div class="card center">
+      <div class="card-title" style="justify-content:center"><span class="ic">◐</span>专 注 番 茄</div>
+      <div class="card-sub">专注一刻 · 远离欲念 · 每轮专注功德 +4</div>
+      <div class="tab-row" style="justify-content:center">
+        ${POMO_PRESETS.map((pp,i)=>`<button class="tab ${i===pomo.preset?"active":""}" onclick="pomoSetPreset(${i})">${pp.name}</button>`).join("")}
+      </div>
+      <div class="pomo-display" id="pomoDisplay">${fmtPomo(pomo.left)}</div>
+      <p class="muted" id="pomoMode">${pomo.mode==="focus"?"专 注 中":"休 息 中"} · 今日已专注 ${me.pomoCount} 轮</p>
+      <div class="pomo-controls">
+        <button class="btn btn-primary" id="pomoBtn" onclick="pomoToggle()">${pomo.running?"暂 停":(pomo.left<(p.mode==="focus"?p.f:p.b)*60?"继 续":"开 始")}</button>
+        <button class="btn btn-ghost" onclick="pomoReset()">重 置</button>
+      </div>
+    </div>`;
+}
+function fmtPomo(s){return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+function pomoSetPreset(i){
+  pomoStopTimer();
+  pomo={timer:null,left:POMO_PRESETS[i].f*60,running:false,mode:"focus",preset:i};
+  renderPomodoro(document.getElementById("view"));
+}
+function pomoStopTimer(){pomo.running=false;clearInterval(pomo.timer)}
+function pomoToggle(){
+  const btn=document.getElementById("pomoBtn");
+  if(pomo.running){
+    pomoStopTimer();btn.textContent="继 续";
+  }else{
+    pomo.running=true;btn.textContent="暂 停";
+    pomo.timer=setInterval(()=>{
+      if(!pomo.running)return;
+      pomo.left--;
+      const d=document.getElementById("pomoDisplay");
+      if(d)d.textContent=fmtPomo(Math.max(0,pomo.left));
+      if(pomo.left<=0){
+        const wasFocus=pomo.mode==="focus";
+        pomoStopTimer();
+        if(wasFocus){
+          api("/pomodoro",{mode:"focus"}).then(r=>{
+            if(r.user)setMe(r.user);
+            toast("专注圆满 · 功德 +4");
+          }).catch(()=>{});
+          pomo.mode="break";pomo.left=POMO_PRESETS[pomo.preset].b*60;
+        }else{
+          toast("休憩已毕 · 再启专注");
+          pomo.mode="focus";pomo.left=POMO_PRESETS[pomo.preset].f*60;
+        }
+        renderPomodoro(document.getElementById("view"));
+      }
+    },1000);
+  }
+}
+function pomoReset(){pomoStopTimer();pomo.left=(pomo.mode==="focus"?POMO_PRESETS[pomo.preset].f:POMO_PRESETS[pomo.preset].b)*60;renderPomodoro(document.getElementById("view"))}
+
+/* ============================================================
+   12. 健康追踪（周柱状图）
+   ============================================================ */
+async function renderHealth(v){
+  const d=await api("/health");
+  const rec=d.list.find(h=>h.date===todayStr())||{date:todayStr(),sleep:"",mood:"平淡",sport:"",note:""};
+  const week=d.list.slice(0,7).reverse();
+  const maxSleep=Math.max(8,...week.map(h=>+h.sleep||0));
+  const maxSport=Math.max(60,...week.map(h=>+h.sport||0));
+  v.innerHTML=`
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-title"><span class="ic">♡</span>今 日 体 察</div>
+        <div class="card-sub">身心并修 · 节欲保精 · 新记录功德 +2</div>
+        <div class="field"><label>睡眠时长（小时）</label><input id="h_sleep" type="number" step="0.5" value="${escapeHtml(rec.sleep)}" placeholder="如 7.5"></div>
+        <div class="field-row">
+          <div class="field"><label>心境</label>
+            <select id="h_mood">${MOOD_LIST.map(m=>`<option ${rec.mood===m?"selected":""}>${m}</option>`).join("")}</select>
+          </div>
+          <div class="field"><label>运动（分钟）</label><input id="h_sport" type="number" value="${escapeHtml(rec.sport)}" placeholder="如 30"></div>
+        </div>
+        <div class="field"><label>体察记录</label><textarea id="h_note" placeholder="身体感受、情绪波动…">${escapeHtml(rec.note)}</textarea></div>
+        <button class="btn btn-primary btn-sm" onclick="saveHealth()">记 录 体 察</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="ic">▦</span>近七日睡眠（时）</div>
+        <div class="bars">
+          ${week.length===0?`<p class="empty" style="width:100%">暂无记录</p>`
+            :week.map(h=>`<div class="bar-wrap">
+                <div class="bar" style="height:${Math.round(((+h.sleep||0)/maxSleep)*100)}%"></div>
+                <div class="bar-label">${h.date.slice(5)}</div></div>`).join("")}
+        </div>
+        <div class="spacer"></div>
+        <div class="card-title" style="font-size:15px"><span class="ic" style="color:var(--jade)">▦</span>近七日运动（分）</div>
+        <div class="bars">
+          ${week.length===0?`<p class="empty" style="width:100%">暂无记录</p>`
+            :week.map(h=>`<div class="bar-wrap">
+                <div class="bar jade" style="height:${Math.round(((+h.sport||0)/maxSport)*100)}%"></div>
+                <div class="bar-label">${h.date.slice(5)}</div></div>`).join("")}
+        </div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">❀</span>体 察 记 录</div>
+      ${d.list.length===0?`<p class="empty">尚无记录</p>`
+        :d.list.map(h=>`
+          <div class="entry">
+            <div class="meta">${h.date}<span class="tag tag-ink">${escapeHtml(h.mood||"—")}</span></div>
+            <div class="txt">睡眠 ${h.sleep||"—"} 时 · 运动 ${h.sport||"—"} 分${h.note?"\n"+escapeHtml(h.note):""}</div>
+          </div>`).join("")}
+    </div>`;
+}
+async function saveHealth(){
+  try{
+    const d=await api("/health",{
+      sleep:document.getElementById("h_sleep").value,
+      mood:document.getElementById("h_mood").value,
+      sport:document.getElementById("h_sport").value,
+      note:document.getElementById("h_note").value.trim()
+    });
+    setMe(d.user);
+    toast(d.new?"已记录体察 · 功德 +2":"今日体察已更新");
+    renderHealth(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   13. 等级修行
+   ============================================================ */
+async function renderLevel(v){
+  const d=await api("/me");setMe(d.user);
+  const lv=getLevel(me.streak);
+  const idx=LEVELS.indexOf(lv);
+  const next=LEVELS[idx+1];
+  const pct=next?Math.min(100,Math.round((me.streak-lv.min)/(next.min-lv.min)*100)):100;
+  v.innerHTML=`
+    <div class="card center">
+      <div class="card-title" style="justify-content:center"><span class="ic">★</span>修 行 境 界</div>
+      <div class="level-badge"><div class="lv">第 ${lv.lv} 阶</div><div class="nm">${lv.name}</div></div>
+      <p class="big-num" style="font-size:34px">${me.streak} <small>日守戒</small></p>
+      ${next?`
+        <p class="muted">距「${next.name}」尚需 ${Math.max(0,next.min-me.streak)} 日</p>
+        <div class="progress" style="max-width:400px;margin:14px auto 0"><div style="width:${pct}%"></div></div>
+        <div class="muted right" style="max-width:400px;margin:6px auto 0">${pct}%</div>`
+        :'<p class="success-line">已达至高境界 · 圣贤之道</p>'}
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">❀</span>境 阶 总 览</div>
+      <div class="grid grid-3">
+        ${LEVELS.map(l=>{
+          const reached=me.streak>=l.min;
+          return `<div class="card" style="padding:16px;${reached?"border-color:var(--vermillion)":""}">
+            <div class="muted">第 ${l.lv} 阶</div>
+            <div style="font-family:'Ma Shan Zheng',cursive;font-size:21px;color:${reached?"var(--vermillion)":"var(--ink-soft)"};margin:4px 0">${l.name}</div>
+            <div class="muted">守戒 ≥ ${l.min} 日 ${reached?"· 已达":""}</div>
+          </div>`}).join("")}
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">✚</span>修 行 总 览</div>
+      <div class="stat-row">
+        <div class="stat"><div class="v">${me.streak}</div><div class="l">连续日</div></div>
+        <div class="stat"><div class="v">${me.days}</div><div class="l">累计日</div></div>
+        <div class="stat"><div class="v">${me.merit}</div><div class="l">功德</div></div>
+        <div class="stat"><div class="v">${me.relapseCount}</div><div class="l">破戒次</div></div>
+        <div class="stat"><div class="v">${me.quizBest}</div><div class="l">答题最佳</div></div>
+        <div class="stat"><div class="v">${me.pomoCount}</div><div class="l">专注轮</div></div>
+        <div class="stat"><div class="v">${me.medBreaths}</div><div class="l">呼吸数</div></div>
+        <div class="stat"><div class="v">${me.resistCount}</div><div class="l">拒念次</div></div>
+      </div>
+      <div class="spacer"></div>
+      <p class="muted center">入道于 ${fmtDateCN(me.createdAt)} · 立志戒期 ${me.goal} 日 · ${escapeHtml(me.region)}</p>
+    </div>`;
+}
+
+/* ============================================================
+   14. 成就殿堂
+   ============================================================ */
+async function renderAchievements(v){
+  const d=await api("/me");setMe(d.user);
+  const unlocked=ACHIEVEMENTS.filter(a=>a.cond(me));
+  v.innerHTML=`
+    <div class="card center" style="margin-bottom:18px">
+      <div class="card-title" style="justify-content:center"><span class="ic">❂</span>成 就 殿 堂</div>
+      <p class="big-num" style="font-size:40px">${unlocked.length} <small>/ ${ACHIEVEMENTS.length} 枚</small></p>
+      <div class="progress" style="max-width:380px;margin:0 auto"><div style="width:${Math.round(unlocked.length/ACHIEVEMENTS.length*100)}%"></div></div>
+      <p class="muted" style="margin-top:8px">每一枚徽章，都是一次心性的淬炼</p>
+    </div>
+    <div class="grid grid-3">
+      ${ACHIEVEMENTS.map(a=>{
+        const got=a.cond(me);
+        return `<div class="ach-card ${got?"unlocked":"locked"}">
+          <div class="a-ic">${a.ic}</div>
+          <div class="a-name">${a.name}${got?' <span class="tag tag-jade">已得</span>':""}</div>
+          <div class="a-desc">${a.desc}</div>
+        </div>`}).join("")}
+    </div>`;
+}
+
+/* ============================================================
+   15. 修行设置
+   ============================================================ */
+function renderSettings(v){
+  v.innerHTML=`
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-title"><span class="ic">⚙</span>修 行 资 料</div>
+        <div class="card-sub">道号：${escapeHtml(me.name)} · 入道 ${fmtDateCN(me.createdAt)}</div>
+        <div class="field"><label>戒色誓词（自勉）</label><textarea id="s_vow">${escapeHtml(me.vow)}</textarea></div>
+        <div class="field-row">
+          <div class="field"><label>立志戒期</label>
+            <select id="s_goal">
+              ${[7,21,100,365].map(g=>`<option value="${g}" ${me.goal===g?"selected":""}>${g} 日</option>`).join("")}
+            </select>
+          </div>
+          <div class="field"><label>所在地区（红黑榜归属）</label>
+            <select id="s_region">${PROVINCES.map(p=>`<option ${me.region===p?"selected":""}>${p}</option>`).join("")}</select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveSettings()">保 存 修 行 资 料</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="ic">◐</span>外 观 与 数 据</div>
+        <div class="card-sub">墨夜护眼 · 数据随身</div>
+        <div class="flex" style="margin-bottom:14px">
+          <button class="btn btn-ghost btn-sm" onclick="toggleTheme()">切 换 墨 夜 / 宣 纸 模 式</button>
+        </div>
+        <div class="flex">
+          <button class="btn btn-ghost btn-sm" onclick="exportData()">导 出 我 的 数 据（JSON）</button>
+        </div>
+        <div class="spacer"></div>
+        <div class="card-title" style="font-size:15px"><span class="ic">✉</span>联 系 作 者</div>
+        <p class="muted" style="margin-bottom:8px">微信号：jihemanyouzhe · QQ号：1312513825</p>
+        <div class="flex">
+          <button class="btn btn-ghost btn-sm" onclick="openContact()">查 看 联 系 方 式</button>
+        </div>
+        <div class="spacer"></div>
+        <div class="card-title" style="font-size:15px;color:var(--vermillion)"><span class="ic">!</span>危 险 操 作</div>
+        <div class="flex">
+          <button class="btn btn-ghost btn-sm" style="color:var(--vermillion);border-color:var(--vermillion)" onclick="deleteAccount()">注 销 账 号</button>
+          <button class="btn btn-ghost btn-sm" onclick="logout()">退 出 登 录</button>
+        </div>
+        <p class="muted" style="margin-top:10px">注销将删除所有修行记录，不可恢复。</p>
+      </div>
+    </div>`;
+}
+async function saveSettings(){
+  try{
+    const d=await api("/settings",{
+      vow:document.getElementById("s_vow").value.trim(),
+      goal:+document.getElementById("s_goal").value,
+      region:document.getElementById("s_region").value
+    });
+    setMe(d.user);
+    toast("修行资料已更新");
+    renderSettings(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function exportData(){
+  try{
+    const d=await api("/export");
+    const blob=new Blob([JSON.stringify(d.data,null,2)],{type:"application/json"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`朱砂戒_${me.name}_${todayStr()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast("数据已导出");
+  }catch(e){toast(e.message)}
+}
+async function deleteAccount(){
+  if(!confirm("确定注销账号？所有修行记录将被永久删除！"))return;
+  if(!confirm("再次确认：此操作不可恢复。真的要离开吗？"))return;
+  try{
+    await api("/account/delete",{});
+    TOKEN=null;localStorage.removeItem(TOKEN_KEY);
+    me=null;achSeen=null;
+    showLanding();
+    toast("账号已注销 · 一切随缘");
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   SOS 欲念急救
+   ============================================================ */
+let sosBreatheTimer=null,sosTimerInt=null,sosLeft=20*60;
+function openContact(){
+  document.getElementById("contactMask").classList.add("show");
+}
+function closeContact(){
+  document.getElementById("contactMask").classList.remove("show");
+}
+function copyContact(text){
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(()=>toast("已复制："+text)).catch(()=>fallbackCopy(text));
+  }else fallbackCopy(text);
+}
+function openSOS(){
+  document.getElementById("sosOverlay").classList.add("show");
+  document.querySelectorAll("#sosActs li").forEach(li=>li.classList.remove("ok"));
+  sosBreatheStart();
+}
+function closeSOS(){
+  document.getElementById("sosOverlay").classList.remove("show");
+  clearInterval(sosBreatheTimer);sosBreatheTimer=null;
+  if(sosTimerInt){clearInterval(sosTimerInt);sosTimerInt=null;sosLeft=20*60;
+    const t=document.getElementById("sosTimer");if(t)t.textContent="20:00";
+    const b=document.getElementById("sosTimerBtn");if(b)b.textContent="开 始 计 时";}
+}
+function sosBreatheStart(){
+  clearInterval(sosBreatheTimer);
+  const circle=document.getElementById("sosCircle"),phase=document.getElementById("sosPhase");
+  const seq=[["吸",4,"in"],["持",7,""],["呼",8,"out"]];
+  let i=0,left=seq[0][1];
+  const paint=()=>{phase.textContent=seq[i][0]+" · "+left;circle.className="sos-circle "+seq[i][2]};
+  paint();
+  sosBreatheTimer=setInterval(()=>{
+    left--;
+    if(left<=0){i=(i+1)%3;left=seq[i][1]}
+    paint();
+  },1000);
+}
+function sosTimerToggle(){
+  const btn=document.getElementById("sosTimerBtn"),t=document.getElementById("sosTimer");
+  if(sosTimerInt){
+    clearInterval(sosTimerInt);sosTimerInt=null;
+    btn.textContent="继 续 计 时";return;
+  }
+  btn.textContent="暂 停 计 时";
+  sosTimerInt=setInterval(()=>{
+    sosLeft--;
+    if(sosLeft<=0){
+      clearInterval(sosTimerInt);sosTimerInt=null;sosLeft=0;
+      t.textContent="危机已过";btn.textContent="重 新 计 时";
+      btn.onclick=()=>{sosLeft=20*60;btn.onclick=sosTimerToggle;sosTimerToggle()};
+      return;
+    }
+    t.textContent=`${String(Math.floor(sosLeft/60)).padStart(2,"0")}:${String(sosLeft%60).padStart(2,"0")}`;
+  },1000);
+}
+async function sosVictory(){
+  try{
+    const d=await api("/resist",{});
+    setMe(d.user);
+    toast("守念成功 · 拒念 +1 · 功德 +6");
+    closeSOS();
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   新增：戒色日历 · 月历打卡一览
+   ============================================================ */
+let calMonth=new Date();
+async function renderCalendar(v){
+  const d=await api("/me");setMe(d.user);
+  const checkinSet=new Set(me.checkins);
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">▦</span>戒 色 月 历</div>
+      <div class="card-sub">朱印为守 · 空白待修 · 月月精进</div>
+      <div class="flex" style="justify-content:space-between;align-items:center;margin:18px 0">
+        <button class="btn btn-ghost btn-sm" onclick="calNav(-1)">◀ 上月</button>
+        <span class="big-num" style="font-size:22px">${calMonth.getFullYear()} 年 ${calMonth.getMonth()+1} 月</span>
+        <button class="btn btn-ghost btn-sm" onclick="calNav(1)">下月 ▶</button>
+      </div>
+      <div class="cal-week-row">${["日","一","二","三","四","五","六"].map(w=>`<span class="cal-week">${w}</span>`).join("")}</div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="spacer"></div>
+      <div class="flex" style="gap:16px;justify-content:center;flex-wrap:wrap">
+        <span class="flex" style="align-items:center;gap:6px"><span class="cal-dot cal-done"></span>已守</span>
+        <span class="flex" style="align-items:center;gap:6px"><span class="cal-dot cal-miss"></span>未守</span>
+        <span class="flex" style="align-items:center;gap:6px"><span class="cal-dot cal-future"></span>未来</span>
+        <span class="flex" style="align-items:center;gap:6px"><span class="cal-dot cal-relapse"></span>破戒</span>
+      </div>
+      <div class="spacer"></div>
+      <p class="muted center">本月已守 <b style="color:var(--vermillion)">${countMonthCheckins(checkinSet,calMonth)}</b> 日 · 累计守戒 <b>${me.days}</b> 日</p>
+    </div>`;
+  drawCalendar(checkinSet);
+}
+function countMonthCheckins(set,dt){
+  const y=dt.getFullYear(),m=dt.getMonth();
+  const last=new Date(y,m+1,0).getDate();
+  let n=0;
+  for(let d=1;d<=last;d++){
+    const ds=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    if(set.has(ds))n++;
+  }
+  return n;
+}
+function calNav(dir){
+  calMonth.setMonth(calMonth.getMonth()+dir);
+  renderCalendar(document.getElementById("view"));
+}
+function drawCalendar(set){
+  const y=calMonth.getFullYear(),m=calMonth.getMonth();
+  const first=new Date(y,m,1);
+  const startPad=first.getDay();
+  const last=new Date(y,m+1,0).getDate();
+  const today=todayStr();
+  let html="";
+  for(let i=0;i<startPad;i++)html+=`<span class="cal-cell cal-empty"></span>`;
+  for(let d=1;d<=last;d++){
+    const ds=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const done=set.has(ds);
+    const future=ds>today;
+    const isToday=ds===today;
+    let cls="cal-cell";
+    if(done)cls+=" cal-done";
+    else if(future)cls+=" cal-future";
+    else cls+=" cal-miss";
+    if(isToday)cls+=" cal-today";
+    html+=`<span class="${cls}">${done?'<span class="cal-seal">戒</span>':d}</span>`;
+  }
+  document.getElementById("calGrid").innerHTML=html;
+}
+
+/* ============================================================
+   新增：定力试炼 · 守念挑战
+   ============================================================ */
+const WP_SCENES=[
+  {t:"独处深夜，心念翻涌如潮",h:"你感到一股冲动在升起……"},
+  {t:"手机弹出不净画面",h:"你的手指悬在屏幕上方……"},
+  {t:"旧习念头猛然袭来",h:"脑海在低语：就这一次……"},
+  {t:"疲惫归家，空虚填胸",h:"你想用刺激填补空洞……"},
+  {t:"压力如山，欲寻宣泄",h:"旧有的出口在向你招手……"},
+  {t:"无聊至极，百无聊赖",h:"你开始寻找些什么来消磨……"}
+];
+let wpActive=false,wpTimer=null,wpProgress=0,wpScene=0;
+async function renderWillpower(v){
+  const d=await api("/me");setMe(d.user);
+  v.innerHTML=`
+    <div class="card" style="text-align:center">
+      <div class="card-title"><span class="ic">⚡</span>定 力 试 炼</div>
+      <div class="card-sub">守念十秒 · 炼心一瞬 · 每次成功拒念 +1 功德 +6</div>
+      <div class="spacer"></div>
+      <div id="wpStage">
+        <p class="big-num" style="font-size:16px;color:var(--ink-2)">点击下方按钮开始试炼</p>
+        <p class="muted">系统将随机出现一道邪念场景<br/>你需在十秒内长按"守念"按钮不放<br/>松手则试炼失败，需重来</p>
+        <div class="spacer"></div>
+        <button class="btn btn-jade" style="width:100%;max-width:320px" onclick="wpStart()">开 始 试 炼</button>
+        <div class="spacer"></div>
+        <div class="flex" style="justify-content:center;gap:24px">
+          <div><span class="muted">已拒念</span><br><b style="font-size:20px;color:var(--vermillion)">${me.resistCount}</b></div>
+          <div><span class="muted">功德</span><br><b style="font-size:20px;color:var(--jade)">${me.merit}</b></div>
+        </div>
+      </div>
+    </div>`;
+}
+function wpStart(){
+  wpScene=Math.floor(Math.random()*WP_SCENES.length);
+  wpProgress=0;
+  wpActive=false;
+  const stage=document.getElementById("wpStage");
+  stage.innerHTML=`
+    <div class="wp-scene">
+      <p class="big-num" style="font-size:18px">${WP_SCENES[wpScene].t}</p>
+      <p class="muted" style="font-style:italic">${WP_SCENES[wpScene].h}</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="wp-ring" id="wpRing">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(184,146,74,.2)" stroke-width="6"/>
+        <circle id="wpArc" cx="70" cy="70" r="60" fill="none" stroke="var(--vermillion)" stroke-width="6"
+          stroke-dasharray="377" stroke-dashoffset="377" transform="rotate(-90 70 70)" stroke-linecap="round"/>
+      </svg>
+      <span class="wp-ring-txt" id="wpRingTxt">10</span>
+    </div>
+    <p class="muted center">长按下方按钮 · 守念十秒</p>
+    <button class="btn wp-hold-btn" id="wpHoldBtn">守 念</button>`;
+  const btn=document.getElementById("wpHoldBtn");
+  const ring=document.getElementById("wpArc");
+  const ringTxt=document.getElementById("wpRingTxt");
+  let raf=null;
+  let startTime=null;
+  const DURATION=10000;
+  function tick(){
+    if(!wpActive)return;
+    const elapsed=Date.now()-startTime;
+    const pct=Math.min(1,elapsed/DURATION);
+    ring.style.strokeDashoffset=377*(1-pct);
+    ringTxt.textContent=Math.max(0,Math.ceil((DURATION-elapsed)/1000));
+    if(pct>=1){wpWin();return}
+    raf=requestAnimationFrame(tick);
+  }
+  // 只在按下时才开始计时
+  btn.onpointerdown=()=>{if(wpActive)return;wpActive=true;startTime=Date.now();raf=requestAnimationFrame(tick)};
+  btn.onpointerup=()=>{if(!wpActive)return;wpActive=false;if(raf){cancelAnimationFrame(raf);raf=null}wpFail()};
+  btn.onpointerleave=()=>{if(wpActive){wpActive=false;if(raf){cancelAnimationFrame(raf);raf=null}wpFail()}};
+  // touch fallback
+  btn.ontouchstart=e=>{e.preventDefault();btn.onpointerdown()};
+  btn.ontouchend=e=>{e.preventDefault();btn.onpointerup()};
+}
+function wpWin(){
+  wpActive=false;
+  const stage=document.getElementById("wpStage");
+  stage.innerHTML=`
+    <p class="big-num" style="font-size:22px;color:var(--jade)">守 念 成 功</p>
+    <p class="muted">邪念已散 · 定力增一分</p>
+    <div class="spacer"></div>
+    <button class="btn btn-jade" style="width:100%;max-width:320px" onclick="renderWillpower(document.getElementById('view'))">再 试 一 次</button>`;
+  api("/resist",{}).then(d=>{setMe(d.user);toast("守念成功 · 拒念 +1 · 功德 +6")}).catch(()=>{});
+}
+function wpFail(){
+  const stage=document.getElementById("wpStage");
+  stage.innerHTML=`
+    <p class="big-num" style="font-size:22px;color:var(--vermillion)">心 念 散 乱</p>
+    <p class="muted">不要气馁 · 跌倒再起便是修行</p>
+    <div class="spacer"></div>
+    <button class="btn" style="width:100%;max-width:320px" onclick="wpStart()">重 新 试 炼</button>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost btn-sm" onclick="renderWillpower(document.getElementById('view'))">返回</button>`;
+}
+
+/* ============================================================
+   新增：同修共勉墙
+   ============================================================ */
+async function renderEncourage(v){
+  let list=[];
+  try{const d=await api("/encourage");list=d.list}catch(e){}
+  const sorted=[...list].sort((a,b)=>encSort==="hot"?(b.hearts||0)-(a.hearts||0):(b.date||"").localeCompare(a.date||""));
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">❤</span>同 修 共 勉 墙</div>
+      <div class="card-sub">匿名勉语 · 一字一句皆是暖 · 功德 +4</div>
+      <div class="spacer"></div>
+      <textarea id="encText" class="ta" rows="2" maxlength="200" placeholder="写下你想对同修说的话…（如：兄弟加油，你不是一个人在战斗）"
+        style="font-family:inherit;margin-bottom:8px"></textarea>
+      <button class="btn btn-jade btn-sm" style="width:100%" onclick="postEncourage()">送 出 勉 语</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">✦</span>勉 语
+        <span class="sort-tabs">
+          <span class="sort-tab ${encSort==="new"?"on":""}" onclick="setEncSort('new')">最新</span>
+          <span class="sort-tab ${encSort==="hot"?"on":""}" onclick="setEncSort('hot')">最暖</span>
+        </span>
+      </div>
+      <div id="encList">${renderEncList(sorted)}</div>
+    </div>`;
+}
+function setEncSort(s){encSort=s;renderEncourage(document.getElementById("view"))}
+function renderEncList(list){
+  if(!list.length)return `<p class="empty">尚无勉语 · 愿君先行一言</p>`;
+  return list.map(e=>`
+    <div class="entry">
+      <div class="meta">${escapeHtml(e.region)} · ${e.date}</div>
+      <div class="txt">${escapeHtml(e.text)}</div>
+      <div class="flex" style="justify-content:flex-end">
+        <button class="btn btn-ghost btn-sm ${e.liked?'liked':''}" ${e.liked?'disabled':''} onclick="encHeart(${e.id},this)">${e.liked?'已 赞 · ':''}❤ ${e.hearts}</button>
+      </div>
+    </div>`).join("");
+}
+async function postEncourage(){
+  const ta=document.getElementById("encText");
+  const t=ta.value.trim();
+  if(!t)return toast("请先写下勉语");
+  try{
+    const d=await api("/encourage",{text:t});
+    setMe(d.user);
+    toast("勉语已送出 · 功德 +4");
+    renderEncourage(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function encHeart(id,btn){
+  if(btn.disabled)return;
+  try{
+    const d=await api("/encourage/heart",{id});
+    btn.classList.add("liked");
+    btn.disabled=true;
+    btn.innerHTML=`已 赞 · ❤ ${d.hearts}`;
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   新增：破戒复盘
+   ============================================================ */
+async function renderReflections(v){
+  let list=[];
+  try{const d=await api("/reflections");list=d.list}catch(e){}
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">⟳</span>破 戒 复 盘</div>
+      <div class="card-sub">跌倒不可怕 · 不知为何跌倒才可怕</div>
+      <div class="spacer"></div>
+      <label class="field-label">触发诱因</label>
+      <input id="rfTrigger" class="input" maxlength="200" placeholder="如：深夜独处 / 压力大 / 刷手机…">
+      <label class="field-label" style="margin-top:10px">当时心境</label>
+      <input id="rfFeeling" class="input" maxlength="200" placeholder="如：空虚 / 烦躁 / 无聊…">
+      <label class="field-label" style="margin-top:10px">教训与对策</label>
+      <textarea id="rfLesson" class="ta" rows="3" maxlength="500" placeholder="下次遇到同样情况，我会怎么做…" style="font-family:inherit"></textarea>
+      <div class="spacer"></div>
+      <button class="btn" style="width:100%" onclick="postReflection()">记 录 复 盘</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">❀</span>往 期 复 盘</div>
+      <div id="rfList">${renderRfList(list)}</div>
+    </div>`;
+}
+function renderRfList(list){
+  if(!list.length)return `<p class="empty">尚无复盘记录 · 愿你不需要用到此页</p>`;
+  return list.map(r=>`
+    <div class="entry">
+      <div class="meta">${r.date}${r.trigger?` · 诱因：${escapeHtml(r.trigger)}`:""}</div>
+      ${r.feeling?`<div class="txt" style="color:var(--muted)">心境：${escapeHtml(r.feeling)}</div>`:""}
+      ${r.lesson?`<div class="txt">教训：${escapeHtml(r.lesson)}</div>`:""}
+      <div class="right"><button class="btn btn-ghost btn-sm" onclick="delReflection(${r.id})">删除</button></div>
+    </div>`).join("");
+}
+async function postReflection(){
+  const trigger=document.getElementById("rfTrigger").value.trim();
+  const feeling=document.getElementById("rfFeeling").value.trim();
+  const lesson=document.getElementById("rfLesson").value.trim();
+  if(!trigger&&!lesson)return toast("请填写诱因或教训");
+  try{
+    const d=await api("/reflections",{trigger,feeling,lesson});
+    setMe(d.user);
+    toast("复盘已记录 · 知因断根");
+    renderReflections(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function delReflection(id){
+  try{await api("/reflections/delete",{id});renderReflections(document.getElementById("view"))}
+  catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   启动
+   ============================================================ */
+(async function boot(){
+  applyTheme();
+  if(TOKEN){
+    try{
+      const d=await api("/me");
+      enterApp(d.user);
+      return;
+    }catch(e){
+      if(e.message.includes("无法连接"))toast(e.message);
+    }
+  }
+  showLanding();
+})();
+</script>
+</body>
+</html>
