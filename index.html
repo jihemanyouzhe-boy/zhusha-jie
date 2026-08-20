@@ -133,6 +133,12 @@ html[data-theme="night"] body::before{opacity:.25;mix-blend-mode:overlay}
 .sort-tabs{display:inline-flex;gap:4px;margin-left:auto;background:var(--heat-off);border-radius:14px;padding:3px}
 .sort-tab{font-size:12px;padding:3px 12px;border-radius:11px;cursor:pointer;color:var(--ink-3);transition:all .2s;letter-spacing:.08em}
 .sort-tab.on{background:var(--vermillion);color:#fff;box-shadow:0 2px 6px -2px rgba(140,30,25,.5)}
+.search-box{display:inline-flex;align-items:center;gap:4px}
+.search-box input{font-size:12px;padding:4px 10px;border:1px solid var(--line);border-radius:14px;background:var(--field-bg);color:var(--ink);font-family:inherit;width:110px;transition:width .3s,border-color .2s}
+.search-box input:focus{outline:none;width:160px;border-color:var(--vermillion)}
+.mini-heat{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;padding:8px 0}
+.mini-heat i{width:14px;height:14px;border-radius:3px;background:var(--heat-off);transition:background .2s}
+.mini-heat i.on{background:var(--vermillion);box-shadow:0 0 0 1px rgba(184,48,42,.3)}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:6px;letter-spacing:.1em}
 .field input,.field select,.field textarea{
@@ -1376,6 +1382,7 @@ const ACHIEVEMENTS=[
 const NAV=[
   {section:"每日修行"},
   {id:"checkin",icon:"✓",name:"每日打卡"},
+  {id:"plan",icon:"☰",name:"今日计划"},
   {id:"calendar",icon:"▦",name:"戒色日历"},
   {id:"challenge",icon:"▲",name:"戒色挑战"},
   {id:"leaderboard",icon:"◉",name:"红黑榜"},
@@ -1390,6 +1397,7 @@ const NAV=[
   {id:"journal",icon:"❀",name:"戒色日记"},
   {id:"reflections",icon:"⟳",name:"破戒复盘"},
   {id:"health",icon:"♡",name:"健康追踪"},
+  {id:"stats",icon:"▤",name:"修行统计"},
   {section:"戒友共修"},
   {id:"encourage",icon:"❤",name:"共勉墙"},
   {id:"treehole",icon:"✿",name:"树洞倾诉"},
@@ -1397,6 +1405,7 @@ const NAV=[
   {section:"进阶"},
   {id:"level",icon:"★",name:"等级修行"},
   {id:"achievements",icon:"❂",name:"成就殿堂"},
+  {id:"favorites",icon:"♡",name:"经典收藏"},
   {id:"settings",icon:"⚙",name:"修行设置"}
 ];
 
@@ -1644,11 +1653,11 @@ function renderQuick(){
     <div class="qs">拒念 <b>${me.resistCount}</b> 次</div>`;
 }
 const RENDERERS={
-  checkin:renderCheckin,calendar:renderCalendar,challenge:renderChallenge,leaderboard:renderLeaderboard,
+  checkin:renderCheckin,plan:renderPlan,calendar:renderCalendar,challenge:renderChallenge,leaderboard:renderLeaderboard,
   meditation:renderMeditation,willpower:renderWillpower,merit:renderMerit,classics:renderClassics,
   journal:renderJournal,reflections:renderReflections,quotes:renderQuotes,quiz:renderQuiz,
   treehole:renderTreehole,encourage:renderEncourage,pomodoro:renderPomodoro,health:renderHealth,
-  level:renderLevel,achievements:renderAchievements,settings:renderSettings
+  level:renderLevel,achievements:renderAchievements,favorites:renderFavorites,settings:renderSettings,stats:renderStats
 };
 async function navigate(id){
   curView=id;
@@ -1752,6 +1761,14 @@ async function renderCheckin(v){
         <button class="btn btn-ghost btn-sm" onclick="doRelapse()">坦 诚 破 戒 · 重 新 起 算</button>
         <span class="muted">破戒非终，能起复修，便是道心。</span>
       </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="card">
+      <div class="card-title"><span class="ic">↩</span>补 签 打 卡</div>
+      <div class="card-sub">近 7 天内漏签可补（功德 +3），已打卡日不可再补</div>
+      <div class="flex" style="gap:8px;flex-wrap:wrap">
+        ${[...Array(7)].map((_,i)=>{ const d=new Date();d.setDate(d.getDate()-i-1);const ds=todayStrOf(d);const done=me.checkins.includes(ds);return `<button class="tab ${done?'done':''}" onclick="${done?'':'backfillDate(\''+ds+'\')'}" ${done?'disabled':''}>${ds.slice(5)}${done?'✓':''}</button>`}).join("")}
+      </div>
     </div>`;
   const mc=document.getElementById("moodCard");
   if(mc)renderMoodCard(mc);
@@ -1768,7 +1785,11 @@ async function doCheckin(){
   try{
     const d=await api("/checkin",{});
     setMe(d.user);
-    if(d.changed){celebrate(d.streak);toast(`打卡成功 · 守戒第 ${d.streak} 日 · 功德 +5`)}
+    if(d.changed){
+      celebrate(d.streak);
+      if(d.milestone)toast(`🎉 里程碑达成！连续 ${d.milestone} 日 · 额外功德 +${d.milestoneBonus}`);
+      toast(`打卡成功 · 守戒第 ${d.streak} 日 · 功德 +5`);
+    }
     else toast("今日已守 · 无需重复打卡");
     renderCheckin(document.getElementById("view"));
   }catch(e){toast(e.message)}
@@ -1779,6 +1800,14 @@ async function doRelapse(){
     const d=await api("/relapse",{});
     setMe(d.user);
     toast("已重置 · 复修之道，贵在不自欺");
+    renderCheckin(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+async function backfillDate(ds){
+  if(!confirm(`补签 ${ds}？功德 +3`))return;
+  try{
+    await api("/checkin/backfill",{date:ds});
+    toast(`补签 ${ds} 成功 · 功德 +3`);
     renderCheckin(document.getElementById("view"));
   }catch(e){toast(e.message)}
 }
@@ -2057,8 +2086,10 @@ async function addMerit(id){
 /* ============================================================
    6. 经典诵读
    ============================================================ */
-function renderClassics(v){
+let classicFavs=new Set();
+async function renderClassics(v){
   const book=CLASSICS[classicsBook];
+  if(classicFavs.size===0){try{const d=await api("/classic/fav");classicFavs=new Set(d.list.map(f=>f.book+"|"+f.quote))}catch(e){}}
   v.innerHTML=`
     <div class="card">
       <div class="card-title"><span class="ic">❖</span>经 典 诵 读</div>
@@ -2068,11 +2099,22 @@ function renderClassics(v){
       </div>
       <div class="scroll-y">
         ${book.lines.map((line,i)=>`
-          <div class="entry"><div class="meta">第 ${i+1} 句 · ${book.name}</div>
-          <div class="txt">${line}</div></div>`).join("")}
+          <div class="entry">
+            <div class="meta">第 ${i+1} 句 · ${book.name}</div>
+            <div class="txt">${line}</div>
+            <div class="entry-actions"><button class="btn btn-ghost btn-sm ${classicFavs.has(book.name+"|"+line)?'liked':''}" onclick="toggleClassicFav('${book.name}','${line.replace(/'/g,"\\'")}',this)">${classicFavs.has(book.name+"|"+line)?'已 收 藏 ♡':'收 藏 ♡'}</button></div>
+          </div>`).join("")}
       </div>
       <button class="btn btn-primary" style="margin-top:14px" onclick="reciteClassic()">诵 读《${book.name}》一 卷 · 功 德 +${book===CLASSICS.qingjing||book===CLASSICS.liaofan?6:5}</button>
     </div>`;
+}
+async function toggleClassicFav(book,quote,btn){
+  try{
+    const d=await api("/classic/fav",{book,quote});
+    if(d.added)classicFavs.add(book+"|"+quote);else classicFavs.delete(book+"|"+quote);
+    toast(d.added?"已收藏到经典收藏":"已取消收藏");
+    if(btn){btn.textContent=d.added?"已 收 藏 ♡":"收 藏 ♡";btn.classList.toggle("liked",d.added)}
+  }catch(e){toast(e.message)}
 }
 async function reciteClassic(){
   try{
@@ -2086,8 +2128,9 @@ async function reciteClassic(){
    7. 戒色日记（心境标签）
    ============================================================ */
 let journalMood="平淡";
+let journalSearch="";
 async function renderJournal(v){
-  const d=await api("/journal");
+  const d=await api("/journal"+(journalSearch?"?q="+encodeURIComponent(journalSearch):""));
   const list=d.list;
   v.innerHTML=`
     <div class="card">
@@ -2095,10 +2138,10 @@ async function renderJournal(v){
       <div class="card-sub">如实记录，省察自心 · 写一篇功德 +3</div>
       <div class="field"><label>今日心境</label>
         <div class="flex" style="gap:6px">
-          ${MOOD_LIST.map(m=>`<button class="tab ${m===journalMood?"active":""}" style="padding:5px 14px" onclick="journalMood='${m}';renderJournal(document.getElementById('view'));setTimeout(()=>{const t=document.getElementById('jText');if(t&&t.dataset.focus){t.focus()}},0)">${m}</button>`).join("")}
+          ${MOOD_LIST.map(m=>`<button class="tab ${m===journalMood?"active":""}" style="padding:5px 14px" onclick="journalMood='${m}';renderJournal(document.getElementById('view'))">${m}</button>`).join("")}
         </div>
       </div>
-      <div class="field"><textarea id="jText" data-focus="${journalMood!==undefined?1:1}" placeholder="今日心境如何？有何省察、有何精进…"></textarea></div>
+      <div class="field"><textarea id="jText" placeholder="今日心境如何？有何省察、有何精进…"></textarea></div>
       <div class="flex" style="justify-content:space-between">
         <span class="muted">心所安处，便是道场</span>
         <button class="btn btn-primary btn-sm" onclick="addJournal()">记 录 心 念</button>
@@ -2106,8 +2149,13 @@ async function renderJournal(v){
     </div>
     <div class="spacer"></div>
     <div class="card">
-      <div class="card-title"><span class="ic">❀</span>往 昔 日 记 · 共 ${list.length} 篇</div>
-      ${list.length===0?`<p class="empty">尚无日记 · 愿君提笔</p>`
+      <div class="card-title flex" style="justify-content:space-between;align-items:center">
+        <span><span class="ic">❀</span>往 昔 日 记 · 共 ${list.length} 篇</span>
+        <span class="search-box">
+          <input id="journalSearchInput" value="${escapeHtml(journalSearch)}" placeholder="搜索日记…" onchange="journalSearch=this.value.trim();renderJournal(document.getElementById('view'))"/>
+        </span>
+      </div>
+      ${list.length===0?`<p class="empty">${journalSearch?"未找到相关日记":"尚无日记 · 愿君提笔"}</p>`
         :list.map(j=>`
           <div class="entry">
             <div class="meta">${j.date}<span class="tag tag-ink">${escapeHtml(j.mood||"平淡")}</span></div>
@@ -2294,9 +2342,9 @@ function quizNext(){quizIdx++;quizAnswered=false;quizShow(document.getElementByI
 /* ============================================================
    10. 树洞倾诉（服务器共享）
    ============================================================ */
-let thSort="new",encSort="new";
+let thSort="new",thSearch="",encSort="new",encSearch="";
 async function renderTreehole(v){
-  const d=await api("/treehole");
+  const d=await api("/treehole"+(thSearch?"?q="+encodeURIComponent(thSearch):""));
   const list=[...d.list].sort((a,b)=>thSort==="hot"?(b.hearts||0)-(a.hearts||0):(b.date||"").localeCompare(a.date||""));
   v.innerHTML=`
     <div class="card">
@@ -2310,13 +2358,17 @@ async function renderTreehole(v){
     </div>
     <div class="spacer"></div>
     <div class="card">
-      <div class="card-title"><span class="ic">❀</span>同 修 心 声 · 共 ${d.list.length} 条
-        <span class="sort-tabs">
-          <span class="sort-tab ${thSort==="new"?"on":""}" onclick="setThSort('new')">最新</span>
-          <span class="sort-tab ${thSort==="hot"?"on":""}" onclick="setThSort('hot')">最热</span>
+      <div class="card-title flex" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span><span class="ic">❀</span>同 修 心 声 · 共 ${d.list.length} 条</span>
+        <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="search-box"><input id="thSearchInput" value="${escapeHtml(thSearch)}" placeholder="搜索心声…" onchange="thSearch=this.value.trim();renderTreehole(document.getElementById('view'))"/></span>
+          <span class="sort-tabs">
+            <span class="sort-tab ${thSort==="new"?"on":""}" onclick="setThSort('new')">最新</span>
+            <span class="sort-tab ${thSort==="hot"?"on":""}" onclick="setThSort('hot')">最热</span>
+          </span>
         </span>
       </div>
-      ${list.length===0?`<p class="empty">树洞静默 · 待你倾诉</p>`
+      ${list.length===0?`<p class="empty">${thSearch?"未找到相关心声":"树洞静默 · 待你倾诉"}</p>`
         :list.map(h=>`
           <div class="tree-hole">
             <div class="anon">来自 ${escapeHtml(h.region||"远方")} 的同修 · ${h.date}</div>
@@ -2548,7 +2600,124 @@ async function renderAchievements(v){
 }
 
 /* ============================================================
-   15. 修行设置
+   15. 今日计划
+   ============================================================ */
+async function renderPlan(v){
+  let p;
+  try{p=await api("/plan");p=p.plan}catch(e){v.innerHTML=`<p class="empty">${e.message}</p>`;return}
+  const doneCount=p.items.filter(i=>i.done).length;
+  v.innerHTML=`
+    <div class="card center">
+      <div class="card-title" style="justify-content:center"><span class="ic">☰</span>${p.headline}</div>
+      <div class="card-sub">${p.vow?escapeHtml(p.vow):"立志守戒 · 不孤行"} · 戒期 ${p.goal} 日</div>
+      <div class="progress" style="max-width:320px;margin:12px auto"><div style="width:${Math.round(doneCount/5*100)}%"></div></div>
+      <p class="muted">今日完成 ${doneCount}/5</p>
+    </div>
+    <div class="spacer"></div>
+    ${p.items.map(i=>`
+      <div class="card" style="border-left:3px solid ${i.done?'var(--jade)':'var(--ink-soft)'};cursor:pointer" onclick="doPlanTask('${i.key}')">
+        <div class="flex" style="justify-content:space-between;align-items:center">
+          <div>
+            <div class="card-title" style="margin:0">${i.done?'✓ ':''}${i.task}</div>
+            <div class="muted" style="margin-top:4px">${i.tip}</div>
+          </div>
+          <span class="tag ${i.done?'tag-jade':'tag-ink'}">${i.done?'已做':'待做'}</span>
+        </div>
+      </div>`).join("")}
+    <div class="spacer"></div>
+    <div class="card center">
+      <p class="muted">五课俱全，功德加八。日行五事，守心不难。</p>
+    </div>`;
+}
+async function doPlanTask(key){
+  try{
+    const d=await api("/daily",{task:key});
+    setMe(d.user);
+    if(d.bonus)toast("今日功课圆满 · 功德 +8");
+    else toast("已记录");
+    renderPlan(document.getElementById("view"));
+  }catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   16. 修行统计
+   ============================================================ */
+async function renderStats(v){
+  let s;
+  try{const d=await api("/stats");s=d.stats}catch(e){v.innerHTML=`<p class="empty">${e.message}</p>`;return}
+  const t=s.totals;
+  const checked=s.series.filter(d=>d.checked).length;
+  v.innerHTML=`
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-title"><span class="ic">▤</span>近 30 日打卡</div>
+        <div class="mini-heat">
+          ${s.series.map(d=>`<i class="${d.checked?'on':''}" title="${d.date}"></i>`).join("")}
+        </div>
+        <p class="muted center">${checked}/30 日 · ${Math.round(checked/30*100)}%</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="ic">✦</span>修 行 总 览</div>
+        <div class="stat-row">
+          <div class="stat"><div class="v">${t.merit}</div><div class="l">功德</div></div>
+          <div class="stat"><div class="v">${t.streak}</div><div class="l">连续日</div></div>
+          <div class="stat"><div class="v">${t.days}</div><div class="l">累计日</div></div>
+          <div class="stat"><div class="v">${t.pomo}</div><div class="l">番茄钟</div></div>
+          <div class="stat"><div class="v">${t.medBreaths}</div><div class="l">呼吸数</div></div>
+          <div class="stat"><div class="v">${t.resist}</div><div class="l">拒念</div></div>
+          <div class="stat"><div class="v">${t.quizBest}</div><div class="l">最佳答题</div></div>
+          <div class="stat"><div class="v">${t.relapse}</div><div class="l">破戒</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-title"><span class="ic">❀</span>近 30 日动态</div>
+        <div class="stat-row">
+          <div class="stat"><div class="v">${t.journal}</div><div class="l">日记</div></div>
+          <div class="stat"><div class="v">${t.health}</div><div class="l">健康记录</div></div>
+          <div class="stat"><div class="v">${t.journalAll}</div><div class="l">总日记</div></div>
+          <div class="stat"><div class="v">${t.healthAll}</div><div class="l">总健康</div></div>
+        </div>
+      </div>
+      <div class="card center">
+        <div class="card-title" style="justify-content:center"><span class="ic">★</span>修 行 评 语</div>
+        <p style="font-family:'Ma Shan Zheng',cursive;font-size:24px;color:var(--vermillion);margin:10px 0">
+          ${t.streak>=100?'守百日功，道心坚固':t.streak>=30?'月余守戒，心志可嘉':t.streak>=7?'七日不破，初显道心':t.streak>=3?'三日守心，善始善终':t.streak>0?'初入道门，勉之':''}
+        </p>
+        <p class="muted">${t.streak} 日连续 · ${t.days} 日累计</p>
+      </div>
+    </div>`;
+}
+
+/* ============================================================
+   17. 经典收藏
+   ============================================================ */
+async function renderFavorites(v){
+  let list=[];
+  try{const d=await api("/classic/fav");list=d.list}catch(e){}
+  v.innerHTML=`
+    <div class="card">
+      <div class="card-title"><span class="ic">♡</span>经 典 收 藏</div>
+      <div class="card-sub">收录你在经典诵读中收藏的名句 · 共 ${list.length} 条</div>
+      ${list.length===0?`<p class="empty">尚未收藏任何名句 · 在经典诵读中收藏吧</p>`
+        :list.map(f=>`
+          <div class="entry">
+            <div class="meta">《${escapeHtml(f.book)}》 · ${f.date}</div>
+            <div class="txt">${escapeHtml(f.quote)}</div>
+            <div class="entry-actions"><a onclick="delFav(${f.id})">取消收藏</a></div>
+          </div>`).join("")}
+    </div>`;
+}
+async function delFav(id){
+  if(!confirm("确定取消收藏？"))return;
+  try{await api("/classic/fav/delete",{id});renderFavorites(document.getElementById("view"))}
+  catch(e){toast(e.message)}
+}
+
+/* ============================================================
+   18. 修行设置
    ============================================================ */
 function renderSettings(v){
   v.innerHTML=`
@@ -2866,7 +3035,7 @@ function wpFail(){
    ============================================================ */
 async function renderEncourage(v){
   let list=[];
-  try{const d=await api("/encourage");list=d.list}catch(e){}
+  try{const d=await api("/encourage"+(encSearch?"?q="+encodeURIComponent(encSearch):""));list=d.list}catch(e){}
   const sorted=[...list].sort((a,b)=>encSort==="hot"?(b.hearts||0)-(a.hearts||0):(b.date||"").localeCompare(a.date||""));
   v.innerHTML=`
     <div class="card">
@@ -2879,10 +3048,14 @@ async function renderEncourage(v){
     </div>
     <div class="spacer"></div>
     <div class="card">
-      <div class="card-title"><span class="ic">✦</span>勉 语
-        <span class="sort-tabs">
-          <span class="sort-tab ${encSort==="new"?"on":""}" onclick="setEncSort('new')">最新</span>
-          <span class="sort-tab ${encSort==="hot"?"on":""}" onclick="setEncSort('hot')">最暖</span>
+      <div class="card-title flex" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span><span class="ic">✦</span>勉 语</span>
+        <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="search-box"><input id="encSearchInput" value="${escapeHtml(encSearch)}" placeholder="搜索勉语…" onchange="encSearch=this.value.trim();renderEncourage(document.getElementById('view'))"/></span>
+          <span class="sort-tabs">
+            <span class="sort-tab ${encSort==="new"?"on":""}" onclick="setEncSort('new')">最新</span>
+            <span class="sort-tab ${encSort==="hot"?"on":""}" onclick="setEncSort('hot')">最暖</span>
+          </span>
         </span>
       </div>
       <div id="encList">${renderEncList(sorted)}</div>
