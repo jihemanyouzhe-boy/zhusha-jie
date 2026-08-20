@@ -82,6 +82,10 @@ CREATE TABLE IF NOT EXISTS likes(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id TEXT, target TEXT, item_id INTEGER,
   UNIQUE(user_id, target, item_id));
+CREATE TABLE IF NOT EXISTS favorites(
+  id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT,
+  book TEXT, quote TEXT, date TEXT,
+  UNIQUE(user_id, book, quote));
 """
 
 
@@ -127,6 +131,7 @@ def init_db():
             CREATE INDEX IF NOT EXISTS idx_likes_user ON likes(user_id);
             CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
             CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
+            CREATE INDEX IF NOT EXISTS idx_favorites_user ON favorites(user_id);
             """)
         # 清理已过期会话
         with con:
@@ -278,6 +283,10 @@ def me(h, user, body, q, m):
 
 
 # ---------- 打卡 / 破戒 ----------
+# 连续打卡里程碑：达到这些天数时额外奖励功德
+MILESTONES = {7: 20, 21: 30, 30: 50, 100: 100, 365: 365}
+
+
 @route("POST", "/checkin")
 def checkin(h, user, body, q, m):
     t = today()
@@ -287,21 +296,49 @@ def checkin(h, user, body, q, m):
         sync_streak_row(con, u)
         u = con.execute("SELECT * FROM users WHERE id=?", (user["id"],)).fetchone()
         if u["last_checkin"] == t:
-            return user_json(con, u), False
+            return user_json(con, u), False, None
         if u["last_checkin"]:
             diff = (date.fromisoformat(t) - date.fromisoformat(u["last_checkin"])).days
             streak = u["streak"] + 1 if diff == 1 else 1
         else:
             streak = 1
+        milestone = streak if streak in MILESTONES else None
+        bonus = MILESTONES.get(streak, 0)
         con.execute(
-            "UPDATE users SET streak=?, last_checkin=?, merit=merit+5, days=days+1 WHERE id=?",
-            (streak, t, u["id"]))
+            "UPDATE users SET streak=?, last_checkin=?, merit=merit+? WHERE id=?",
+            (streak, t, 5 + bonus, u["id"]))
+        con.execute("UPDATE users SET days=days+1 WHERE id=?", (u["id"],))
         con.execute("INSERT OR IGNORE INTO checkins(user_id,date) VALUES(?,?)", (u["id"], t))
         u2 = con.execute("SELECT * FROM users WHERE id=?", (u["id"],)).fetchone()
-        return user_json(con, u2), True
+        return user_json(con, u2), True, milestone
 
-    uj, changed = tx(op)
-    h._json({"ok": True, "user": uj, "changed": changed, "streak": uj["streak"]})
+    uj, changed, milestone = tx(op)
+    h._json({"ok": True, "user": uj, "changed": changed, "streak": uj["streak"],
+             "milestone": milestone, "milestoneBonus": MILESTONES.get(milestone or 0, 0)})
+
+
+# ---------- 打卡补签（近 7 天漏签） ----------
+@route("POST", "/checkin/backfill")
+def checkin_backfill(h, user, body, q, m):
+    target = str(body.get("date", ""))
+    try:
+        d = date.fromisoformat(target)
+    except ValueError:
+        raise ApiError("日期格式有误")
+    diff = (date.today() - d).days
+    if diff < 1 or diff > 7:
+        raise ApiError("仅可补签过去 7 天内")
+
+    def op(con):
+        exists = con.execute(
+            "SELECT 1 FROM checkins WHERE user_id=? AND date=?", (user["id"], target)).fetchone()
+        if exists:
+            raise ApiError("该日已打卡")
+        con.execute("INSERT INTO checkins(user_id,date) VALUES(?,?)", (user["id"], target))
+        con.execute("UPDATE users SET merit=merit+3, days=days+1 WHERE id=?", (user["id"],))
+        u = con.execute("SELECT * FROM users WHERE id=?", (user["id"],)).fetchone()
+        return user_json(con, u)
+    h._json({"ok": True, "user": tx(op), "date": target})
 
 
 @route("POST", "/relapse")
@@ -429,6 +466,47 @@ def classic_recite(h, user, body, q, m):
     h._json({"ok": True, "user": uj, "title": title, "merit": m_})
 
 
+# ---------- 经典名句收藏 ----------
+@route("GET", "/classic/fav")
+def classic_fav_list(h, user, body, q, m):
+    rows = rd(lambda con: [dict(r) for r in con.execute(
+        "SELECT id,book,quote,date FROM favorites WHERE user_id=? ORDER BY id DESC LIMIT 100",
+        (user["id"],))])
+    h._json({"ok": True, "list": rows})
+
+
+@route("POST", "/classic/fav")
+def classic_fav_add(h, user, body, q, m):
+    book = str(body.get("book", "")).strip()
+    quote = str(body.get("quote", "")).strip()
+    if not book or not quote:
+        raise ApiError("缺少收藏内容")
+    if len(quote) > 500:
+        raise ApiError("名句过长")
+
+    def op(con):
+        exists = con.execute(
+            "SELECT 1 FROM favorites WHERE user_id=? AND book=? AND quote=?",
+            (user["id"], book, quote)).fetchone()
+        if exists:
+            con.execute("DELETE FROM favorites WHERE user_id=? AND book=? AND quote=?",
+                        (user["id"], book, quote))
+            return False
+        con.execute("INSERT INTO favorites(user_id,book,quote,date) VALUES(?,?,?,?)",
+                    (user["id"], book, quote, now_str()))
+        return True
+    added = tx(op)
+    h._json({"ok": True, "added": added, "removed": not added})
+
+
+@route("POST", "/classic/fav/delete")
+def classic_fav_del(h, user, body, q, m):
+    fid = int(body.get("id", 0))
+    tx(lambda con: con.execute(
+        "DELETE FROM favorites WHERE id=? AND user_id=?", (fid, user["id"])))
+    h._json({"ok": True})
+
+
 @route("POST", "/meditation")
 def meditation_log(h, user, body, q, m):
     breaths = max(0, min(MAX_BREATHS, int(body.get("breaths", 0))))
@@ -492,10 +570,19 @@ def resist(h, user, body, q, m):
 # ---------- 日记 ----------
 @route("GET", "/journal")
 def journal_list(h, user, body, q, m):
-    rows = rd(lambda con: [dict(r) for r in con.execute(
-        "SELECT id,date,mood,text FROM journal WHERE user_id=? ORDER BY id DESC LIMIT 100",
-        (user["id"],))])
-    h._json({"ok": True, "list": rows})
+    kw = str(q.get("q", "")).strip()
+    def op(con):
+        if kw:
+            rows = [dict(r) for r in con.execute(
+                "SELECT id,date,mood,text FROM journal WHERE user_id=? "
+                "AND text LIKE ? ORDER BY id DESC LIMIT 100",
+                (user["id"], "%" + kw + "%"))]
+        else:
+            rows = [dict(r) for r in con.execute(
+                "SELECT id,date,mood,text FROM journal WHERE user_id=? ORDER BY id DESC LIMIT 100",
+                (user["id"],))]
+        return rows
+    h._json({"ok": True, "list": rd(op)})
 
 
 @route("POST", "/journal")
@@ -561,9 +648,15 @@ def health_save(h, user, body, q, m):
 # ---------- 树洞 ----------
 @route("GET", "/treehole")
 def treehole_list(h, user, body, q, m):
+    kw = str(q.get("q", "")).strip()
     def op(con):
-        rows = [dict(r) for r in con.execute(
-            "SELECT id,text,region,date,hearts FROM treehole ORDER BY id DESC LIMIT 50")]
+        if kw:
+            rows = [dict(r) for r in con.execute(
+                "SELECT id,text,region,date,hearts FROM treehole "
+                "WHERE text LIKE ? ORDER BY id DESC LIMIT 100", ("%" + kw + "%",))]
+        else:
+            rows = [dict(r) for r in con.execute(
+                "SELECT id,text,region,date,hearts FROM treehole ORDER BY id DESC LIMIT 50")]
         liked = {r["item_id"] for r in con.execute(
             "SELECT item_id FROM likes WHERE user_id=? AND target='treehole'",
             (user["id"],))}
@@ -613,9 +706,15 @@ def treehole_heart(h, user, body, q, m):
 # ---------- 同修共勉墙 ----------
 @route("GET", "/encourage")
 def encourage_list(h, user, body, q, m):
+    kw = str(q.get("q", "")).strip()
     def op(con):
-        rows = [dict(r) for r in con.execute(
-            "SELECT id,text,region,date,hearts FROM encourage ORDER BY id DESC LIMIT 60")]
+        if kw:
+            rows = [dict(r) for r in con.execute(
+                "SELECT id,text,region,date,hearts FROM encourage "
+                "WHERE text LIKE ? ORDER BY id DESC LIMIT 100", ("%" + kw + "%",))]
+        else:
+            rows = [dict(r) for r in con.execute(
+                "SELECT id,text,region,date,hearts FROM encourage ORDER BY id DESC LIMIT 60")]
         liked = {r["item_id"] for r in con.execute(
             "SELECT item_id FROM likes WHERE user_id=? AND target='encourage'",
             (user["id"],))}
@@ -823,6 +922,77 @@ def export_data(h, user, body, q, m):
                 (user["id"],))],
         }
     h._json({"ok": True, "data": rd(op)})
+
+
+# ---------- 修行统计（近 30 天周报/月报） ----------
+@route("GET", "/stats")
+def stats(h, user, body, q, m):
+    def op(con):
+        u = con.execute("SELECT * FROM users WHERE id=?", (user["id"],)).fetchone()
+        start = (date.today() - timedelta(days=29)).isoformat()
+        # 近 30 天打卡明细（按日期聚合）
+        checkin_rows = con.execute(
+            "SELECT date, COUNT(*) c FROM checkins WHERE user_id=? AND date>=? GROUP BY date",
+            (user["id"], start)).fetchall()
+        checkin_map = {r["date"]: r["c"] for r in checkin_rows}
+        # 近 30 天每日功德无法直接回溯，改用整体关键指标
+        journal_30 = con.execute(
+            "SELECT COUNT(*) c FROM journal WHERE user_id=? AND substr(date,1,10)>=?",
+            (user["id"], start)).fetchone()["c"]
+        health_30 = con.execute(
+            "SELECT COUNT(*) c FROM health WHERE user_id=? AND date>=?",
+            (user["id"], start)).fetchone()["c"]
+        journal_all = con.execute(
+            "SELECT COUNT(*) c FROM journal WHERE user_id=?", (user["id"],)).fetchone()["c"]
+        health_all = con.execute(
+            "SELECT COUNT(*) c FROM health WHERE user_id=?", (user["id"],)).fetchone()["c"]
+        # 每日善行打卡（近30天）
+        series = []
+        for i in range(29, -1, -1):
+            d = (date.today() - timedelta(days=i)).isoformat()
+            series.append({"date": d, "checked": d in checkin_map})
+        return {
+            "series": series,
+            "totals": {
+                "merit": u["merit"], "streak": u["streak"], "days": u["days"],
+                "relapse": u["relapse_count"], "pomo": u["pomo_count"],
+                "medBreaths": u["med_breaths"], "resist": u["resist_count"],
+                "quizBest": u["quiz_best"], "journal": journal_30,
+                "health": health_30, "journalAll": journal_all,
+                "healthAll": health_all,
+            },
+        }
+    h._json({"ok": True, "stats": rd(op)})
+
+
+# ---------- 每日修行计划生成 ----------
+PLAN_ITEMS = [
+    ("晨诵", "清晨洗漱后，静坐诵读《清静经》或《了凡四训》十分钟，安定心神。"),
+    ("省思", "睡前反省今日起心动念，记下一条最需改正之处。"),
+    ("运动", "快走三十分钟，或深蹲、俯卧撑各三组，以动制欲。"),
+    ("善行", "主动帮助一人，或真诚称赞一人，积一善德。"),
+    ("早眠", "亥时（21~23 点）前熄灯就寝，早睡以养精气。"),
+]
+
+
+@route("GET", "/plan")
+def plan(h, user, body, q, m):
+    def op(con):
+        u = con.execute("SELECT * FROM users WHERE id=?", (user["id"],)).fetchone()
+        vow = (u["vow"] or "").strip()
+        goal = u["goal"] or 21
+        items = [{"task": t, "tip": tip} for t, tip in PLAN_ITEMS]
+        done = json.loads(u["daily"] or "{}").get(today(), {})
+        for it in items:
+            key = {"晨诵": "s", "省思": "j", "运动": "e", "善行": "n", "早眠": "z"}[it["task"]]
+            it["key"] = key
+            it["done"] = bool(done.get(key))
+        return {
+            "vow": vow, "goal": goal,
+            "headline": "今日五事 · 守心精进",
+            "items": items,
+        }
+    h._json({"ok": True, "plan": rd(op)})
 
 
 @route("POST", "/account/delete")
